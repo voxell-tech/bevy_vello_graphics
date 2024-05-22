@@ -1,3 +1,5 @@
+pub use bevy_vello;
+
 use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 use bevy_vello::{prelude::*, VelloPlugin};
 use bezpath::VelloBezPath;
