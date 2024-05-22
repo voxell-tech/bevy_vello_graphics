@@ -1,0 +1,13 @@
+[package]
+name = "bevy_vello_graphics"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+bevy_vello = "0.3"
+bevy = "0.13"
+
+[lints.clippy]
+redundant_type_annotations = "warn"
+bool_comparison = "allow"
