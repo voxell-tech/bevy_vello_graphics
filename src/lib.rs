@@ -21,6 +21,7 @@ pub mod prelude {
     pub use crate::VelloGraphicsPlugin;
     pub use crate::{bezpath::VelloBezPath, circle::VelloCircle, line::VelloLine, rect::VelloRect};
     pub use crate::{brush::Brush, fill::Fill, stroke::Stroke};
+    pub use bevy_vello::prelude::*;
 }
 
 pub struct VelloGraphicsPlugin;
