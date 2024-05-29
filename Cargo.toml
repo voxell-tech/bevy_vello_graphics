@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 bevy = "0.13"
-bevy_vello = "0.3"
+bevy_vello = "0.4"
 
 [lints.clippy]
 redundant_type_annotations = "warn"
