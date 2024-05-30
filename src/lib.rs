@@ -1,5 +1,6 @@
 pub use bevy_vello;
 
+use arrow::VelloArrow;
 use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 use bevy_vello::{prelude::*, VelloPlugin};
 use bezpath::VelloBezPath;
@@ -9,6 +10,7 @@ use line::VelloLine;
 use rect::VelloRect;
 use stroke::Stroke;
 
+pub mod arrow;
 pub mod bezpath;
 pub mod brush;
 pub mod circle;
@@ -19,7 +21,10 @@ pub mod stroke;
 
 pub mod prelude {
     pub use crate::VelloGraphicsPlugin;
-    pub use crate::{bezpath::VelloBezPath, circle::VelloCircle, line::VelloLine, rect::VelloRect};
+    pub use crate::{
+        arrow::VelloArrow, bezpath::VelloBezPath, circle::VelloCircle, line::VelloLine,
+        rect::VelloRect,
+    };
     pub use crate::{brush::Brush, fill::Fill, stroke::Stroke};
     pub use bevy_vello::prelude::*;
 }
