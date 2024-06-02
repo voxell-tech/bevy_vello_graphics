@@ -7,6 +7,7 @@ use super::VelloVector;
 pub struct VelloRect {
     pub size: DVec2,
     pub anchor: DVec2,
+    pub radius: f64,
 }
 
 impl VelloRect {
@@ -14,6 +15,7 @@ impl VelloRect {
         Self {
             size: DVec2::new(width, height),
             anchor: DVec2::splat(0.5),
+            radius: 0.0,
         }
     }
 
@@ -26,15 +28,21 @@ impl VelloRect {
         self.anchor = DVec2::new(x, y);
         self
     }
+
+    pub fn with_radius(mut self, radius: f64) -> Self {
+        self.radius = radius;
+        self
+    }
 }
 
 impl VelloVector for VelloRect {
     fn shape(&self) -> impl kurbo::Shape {
-        kurbo::Rect::new(
+        kurbo::RoundedRect::new(
             -self.size.x * self.anchor.x,
             -self.size.y * self.anchor.y,
             self.size.x * (1.0 - self.anchor.x),
             self.size.y * (1.0 - self.anchor.y),
+            self.radius,
         )
     }
 }
