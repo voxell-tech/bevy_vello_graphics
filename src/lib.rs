@@ -1,6 +1,6 @@
 pub use bevy_vello;
 
-use arrow::VelloArrow;
+use arrow::ArrowHead;
 use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 use bevy_vello::{prelude::*, VelloPlugin};
 use bezpath::VelloBezPath;
@@ -22,7 +22,7 @@ pub mod stroke;
 pub mod prelude {
     pub use crate::VelloGraphicsPlugin;
     pub use crate::{
-        arrow::VelloArrow, bezpath::VelloBezPath, circle::VelloCircle, line::VelloLine,
+        arrow::ArrowHead, bezpath::VelloBezPath, circle::VelloCircle, line::VelloLine,
         rect::VelloRect,
     };
     pub use crate::{brush::Brush, fill::Fill, stroke::Stroke};
@@ -83,45 +83,73 @@ pub(crate) fn build_vector<Vector: VelloVector + Component>() -> SystemConfigs {
 #[allow(clippy::type_complexity)]
 fn build_fill_only_vector<Vector: VelloVector + Component>(
     mut q_vectors: Query<
-        (&Vector, &Fill, &mut VelloScene),
-        (Without<Stroke>, Or<(Changed<Vector>, Changed<Fill>)>),
+        (&Vector, &Fill, Option<&ArrowHead>, &mut VelloScene),
+        (
+            Without<Stroke>,
+            Or<(Changed<Vector>, Changed<Fill>, Changed<ArrowHead>)>,
+        ),
     >,
 ) {
-    for (vector, fill, mut scene) in q_vectors.iter_mut() {
+    for (vector, fill, arrow, mut scene) in q_vectors.iter_mut() {
         *scene = VelloScene::default();
 
         // Build the vector to the VelloScene
         vector.build_fill(fill, &mut scene);
+
+        // Build the possible arrow
+        if let Some(arrow) = arrow {
+            arrow.build_fill(fill, &mut scene);
+        }
     }
 }
 
 #[allow(clippy::type_complexity)]
 fn build_stroke_only_vector<Vector: VelloVector + Component>(
     mut q_vectors: Query<
-        (&Vector, &Stroke, &mut VelloScene),
-        (Without<Fill>, Or<(Changed<Vector>, Changed<Stroke>)>),
+        (&Vector, &Stroke, Option<&ArrowHead>, &mut VelloScene),
+        (
+            Without<Fill>,
+            Or<(Changed<Vector>, Changed<Stroke>)>,
+            Changed<ArrowHead>,
+        ),
     >,
 ) {
-    for (vector, stroke, mut scene) in q_vectors.iter_mut() {
+    for (vector, stroke, arrow, mut scene) in q_vectors.iter_mut() {
         *scene = VelloScene::default();
 
         // Build the vector to the VelloScene
         vector.build_stroke(stroke, &mut scene);
+
+        // Build the possible arrow
+        if let Some(arrow) = arrow {
+            arrow.build_stroke(stroke, &mut scene);
+        }
     }
 }
 
 #[allow(clippy::type_complexity)]
 fn build_fill_and_stroke_vector<Vector: VelloVector + Component>(
     mut q_vectors: Query<
-        (&Vector, &Fill, &Stroke, &mut VelloScene),
-        Or<(Changed<Vector>, Changed<Fill>, Changed<Stroke>)>,
+        (&Vector, &Fill, &Stroke, Option<&ArrowHead>, &mut VelloScene),
+        Or<(
+            Changed<Vector>,
+            Changed<Fill>,
+            Changed<Stroke>,
+            Changed<ArrowHead>,
+        )>,
     >,
 ) {
-    for (vector, fill, stroke, mut scene) in q_vectors.iter_mut() {
+    for (vector, fill, stroke, arrow, mut scene) in q_vectors.iter_mut() {
         *scene = VelloScene::default();
 
         // Build the vector to the VelloScene
         vector.build_fill(fill, &mut scene);
         vector.build_stroke(stroke, &mut scene);
+
+        // Build the possible arrow
+        if let Some(arrow) = arrow {
+            arrow.build_fill(fill, &mut scene);
+            arrow.build_stroke(stroke, &mut scene);
+        }
     }
 }
