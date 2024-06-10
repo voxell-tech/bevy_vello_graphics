@@ -12,7 +12,7 @@ pub struct VelloBezPath {
 
 impl VelloBezPath {
     pub fn new() -> Self {
-        Self::default()
+        Self::default().with_trace(1.0)
     }
 
     pub fn with_path(mut self, path: kurbo::BezPath) -> Self {
