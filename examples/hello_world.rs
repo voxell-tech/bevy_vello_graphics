@@ -43,8 +43,8 @@ fn render_shapes(mut commands: Commands) {
     bez_path.move_to((300.0, 100.0));
     bez_path.curve_to((200.0, 50.0), (400.0, -50.0), (300.0, -100.0));
 
-    // Beizer Path
-    let beizer_path = (
+    // Bézier Path
+    let bezier_path = (
         VelloBezPath::new().with_path(bez_path),
         Stroke::new(4.0).with_color(Color::YELLOW),
     );
@@ -57,5 +57,5 @@ fn render_shapes(mut commands: Commands) {
 
     commands
         .spawn(VelloSceneBundle::default())
-        .insert(beizer_path);
+        .insert(bezier_path);
 }

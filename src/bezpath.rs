@@ -4,7 +4,7 @@ use bevy_vello::prelude::*;
 use super::VelloVector;
 
 /// Vello Bézier path component.
-#[derive(Component, Default, Debug, Clone)]
+#[derive(Component, Clone)]
 pub struct VelloBezPath {
     pub path: kurbo::BezPath,
     pub trace: f32,
@@ -12,7 +12,7 @@ pub struct VelloBezPath {
 
 impl VelloBezPath {
     pub fn new() -> Self {
-        Self::default().with_trace(1.0)
+        Self::default()
     }
 
     pub fn with_path(mut self, path: kurbo::BezPath) -> Self {
@@ -23,6 +23,15 @@ impl VelloBezPath {
     pub fn with_trace(mut self, trace: f32) -> Self {
         self.trace = trace;
         self
+    }
+}
+
+impl Default for VelloBezPath {
+    fn default() -> Self {
+        Self {
+            path: default(),
+            trace: 1.0,
+        }
     }
 }
 
