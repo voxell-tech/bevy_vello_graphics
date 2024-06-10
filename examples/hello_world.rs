@@ -49,17 +49,11 @@ fn render_shapes(mut commands: Commands) {
         Stroke::new(4.0).with_color(Color::YELLOW),
     );
 
-    commands
-        .spawn(VelloSceneBundle::default())
-        .insert(line);
+    commands.spawn(VelloSceneBundle::default()).insert(line);
 
-    commands
-        .spawn(VelloSceneBundle::default())
-        .insert(rect);
+    commands.spawn(VelloSceneBundle::default()).insert(rect);
 
-    commands
-        .spawn(VelloSceneBundle::default())
-        .insert(circle);
+    commands.spawn(VelloSceneBundle::default()).insert(circle);
 
     commands
         .spawn(VelloSceneBundle::default())
