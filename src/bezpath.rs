@@ -1,5 +1,7 @@
-use bevy::prelude::*;
+use bevy::{math::DVec2, prelude::*};
 use bevy_vello::prelude::*;
+
+use crate::VectorBorder;
 
 use super::VelloVector;
 
@@ -135,5 +137,18 @@ fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f32) -> kurbo::Path
             kurbo::PathEl::CurveTo(x0, y0, end_p)
         }
         kurbo::PathEl::ClosePath => kurbo::PathEl::ClosePath,
+    }
+}
+
+impl VectorBorder for VelloBezPath {
+    fn border_translation(&self, _time: f32) -> DVec2 {
+        // TODO: def should not unwrap here
+        let p = self.path.iter().last().unwrap().end_point().unwrap_or_default().to_vec2();
+
+        DVec2::new(p.x, p.y)
+    }
+
+    fn border_tangent(&self, _time: f32) -> f64 {
+        self.border_translation(f32::default()).to_angle()
     }
 }

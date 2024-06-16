@@ -39,6 +39,10 @@ impl Plugin for VelloGraphicsPlugin {
                 build_vector::<VelloCircle>(),
                 build_vector::<VelloLine>(),
                 build_vector::<VelloBezPath>(),
+                build_head::<VelloRect>(),
+                build_head::<VelloCircle>(),
+                build_head::<VelloLine>(),
+                build_head::<VelloBezPath>(),
             ),
         );
     }
@@ -70,17 +74,17 @@ pub trait VelloVector {
     }
 }
 
-pub(crate) fn build_vector<
-    Vector: VelloVector + Component,
-    HeadEquipt: VelloVector + VectorBorder + Component,
->() -> SystemConfigs {
+pub(crate) fn build_vector<Vector: VelloVector + Component>() -> SystemConfigs {
     (
-        append_heads::<HeadEquipt>,
         build_fill_only_vector::<Vector>,
         build_stroke_only_vector::<Vector>,
         build_fill_and_stroke_vector::<Vector>,
     )
         .into_configs()
+}
+
+pub(crate) fn build_head<HeadEquipt: VelloVector + VectorBorder + Component>() -> SystemConfigs {
+    append_heads::<HeadEquipt>.into_configs()
 }
 
 #[allow(clippy::type_complexity)]
@@ -96,13 +100,14 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
 
     for (vector, head, mut scene) in q_vectors.iter_mut() {
         let translation = vector.border_translation(time);
+        let translation = kurbo::Vec2::new(translation.x, translation.y);
         let tangent = vector.border_tangent(time);
         let rotation = tangent.atan();
 
         let transform = kurbo::Affine::default()
             .with_translation(translation)
             .then_rotate(rotation)
-            .then_scale(head.scale);
+            .then_scale(head.scale as f64);
 
         let head_scene = shapes.scenes.get(&head.shape_id);
         if let Some(head_scene) = head_scene {
