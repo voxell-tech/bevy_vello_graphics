@@ -141,14 +141,25 @@ fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f32) -> kurbo::Path
 }
 
 impl VectorBorder for VelloBezPath {
-    fn border_translation(&self, _time: f32) -> DVec2 {
+    fn border_translation(&self, time: f64) -> DVec2 {
         // TODO: def should not unwrap here
-        let p = self.path.iter().last().unwrap().end_point().unwrap_or_default().to_vec2();
+        let first = self.path.elements()[0]
+            .end_point()
+            .unwrap_or_default()
+            .to_vec2();
+        let last = self
+            .path
+            .iter()
+            .last()
+            .unwrap()
+            .end_point()
+            .unwrap_or_default()
+            .to_vec2();
 
-        DVec2::new(p.x, p.y)
+        DVec2::new(first.x, first.y).lerp(DVec2::new(last.x, last.y), time)
     }
 
-    fn border_tangent(&self, _time: f32) -> f64 {
-        self.border_translation(f32::default()).to_angle()
+    fn border_tangent(&self, time: f64) -> f64 {
+        self.border_translation(time).to_angle()
     }
 }

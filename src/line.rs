@@ -44,11 +44,11 @@ impl VelloVector for VelloLine {
 }
 
 impl VectorBorder for VelloLine {
-    fn border_translation(&self, _time: f32) -> DVec2 {
-        self.p1
+    fn border_translation(&self, time: f64) -> DVec2 {
+        self.p0.lerp(self.p1, time)
     }
 
-    fn border_tangent(&self, _time: f32) -> f64 {
+    fn border_tangent(&self, _time: f64) -> f64 {
         (self.p1.y - self.p0.y) / (self.p1.x - self.p0.x)
     }
 }

@@ -8,8 +8,9 @@ pub struct ShapeId(Uuid);
 #[derive(Component, Default, Copy, Clone)]
 pub struct Head {
     pub shape_id: ShapeId,
+    pub time: f64,
 
-    pub scale: f32,
+    pub scale: f64,
     pub offset: f32,
     pub rotation_offset: f32,
 }
@@ -20,8 +21,8 @@ pub struct Shapes {
 }
 
 pub trait VectorBorder {
-    /// translation of the chosen "apex"
-    fn border_translation(&self, time: f32) -> DVec2;
-    /// gradient of the tangent to the border
-    fn border_tangent(&self, time: f32) -> f64;
+    /// Translation of the of the border at a specific `time` value.
+    fn border_translation(&self, time: f64) -> DVec2;
+    /// The gradient of the tangent to the border at a specific `time` value.
+    fn border_tangent(&self, time: f64) -> f64;
 }

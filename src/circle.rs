@@ -28,11 +28,11 @@ impl VelloVector for VelloCircle {
 }
 
 impl VectorBorder for VelloCircle {
-    fn border_translation(&self, _time: f32) -> DVec2 {
-        DVec2::new(0.0, self.radius)
+    fn border_translation(&self, time: f64) -> DVec2 {
+        DVec2::new(0.0, self.radius).lerp(DVec2::new(0.0, 0.0), time)
     }
 
-    fn border_tangent(&self, _time: f32) -> f64 {
-        0.0
+    fn border_tangent(&self, time: f64) -> f64 {
+        self.border_translation(time).to_angle()
     }
 }
