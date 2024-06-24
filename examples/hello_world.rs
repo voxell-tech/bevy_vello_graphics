@@ -19,6 +19,7 @@ fn render_shapes(mut commands: Commands) {
     // Line
     let line = (
         VelloLine::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
+        Head::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
     );

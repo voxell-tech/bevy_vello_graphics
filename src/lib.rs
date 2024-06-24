@@ -32,15 +32,17 @@ pub struct VelloGraphicsPlugin;
 
 impl Plugin for VelloGraphicsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(VelloPlugin).add_systems(
-            Update,
-            (
-                build_vector::<VelloRect>(),
-                build_vector::<VelloCircle>(),
-                build_vector::<VelloLine>(),
-                build_vector::<VelloBezPath>(),
-            ),
-        );
+        app.add_plugins(VelloPlugin)
+            .init_resource::<Shapes>()
+            .add_systems(
+                Update,
+                (
+                    build_vector::<VelloRect>(),
+                    build_vector::<VelloCircle>(),
+                    build_vector::<VelloLine>(),
+                    build_vector::<VelloBezPath>(),
+                ),
+            );
     }
 }
 
@@ -88,8 +90,10 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
         (&HeadEquipt, &Head, &mut VelloScene),
         (Without<Stroke>, Or<(Changed<HeadEquipt>, Changed<Fill>)>),
     >,
-    shapes: Res<Shapes>,
+    shapes: Option<Res<Shapes>>,
 ) {
+    let Some(shapes) = shapes else { return };
+
     for (vector, head, mut scene) in q_vectors.iter_mut() {
         let translation = vector.border_translation(head.time);
         let translation = kurbo::Vec2::new(translation.x, translation.y);

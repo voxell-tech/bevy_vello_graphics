@@ -49,6 +49,6 @@ impl VectorBorder for VelloLine {
     }
 
     fn border_tangent(&self, _time: f64) -> f64 {
-        (self.p1.y - self.p0.y) / (self.p1.x - self.p0.x)
+        ((self.p1.y - self.p0.y) / (self.p1.x - self.p0.x)).atan()
     }
 }

@@ -15,7 +15,11 @@ pub struct Head {
     pub rotation_offset: f32,
 }
 
-#[derive(Resource)]
+// impl Head {
+//     pub fn new()
+// }
+
+#[derive(Resource, Default)]
 pub struct Shapes {
     pub scenes: std::collections::HashMap<ShapeId, &'static mut vello::Scene>,
 }
