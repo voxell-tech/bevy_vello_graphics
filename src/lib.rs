@@ -90,6 +90,7 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
         (&HeadEquipt, &Head, &mut VelloScene),
         (Without<Stroke>, Or<(Changed<HeadEquipt>, Changed<Fill>)>),
     >,
+
     shapes: Option<Res<Shapes>>,
 ) {
     let Some(shapes) = shapes else { return };
@@ -116,7 +117,10 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
 fn build_fill_only_vector<Vector: VelloVector + Component>(
     mut q_vectors: Query<
         (&Vector, &Fill, &mut VelloScene),
-        (Without<Stroke>, Or<(Changed<Vector>, Changed<Fill>)>),
+        (
+            Without<Stroke>,
+            Or<(Without<Head>, Changed<Vector>, Changed<Fill>)>,
+        ),
     >,
 ) {
     for (vector, fill, mut scene) in q_vectors.iter_mut() {
