@@ -1,5 +1,7 @@
-use bevy::prelude::*;
+use bevy::{math::DVec2, prelude::*};
 use bevy_vello::prelude::*;
+
+use crate::VectorBorder;
 
 use super::VelloVector;
 
@@ -22,5 +24,15 @@ impl VelloCircle {
 impl VelloVector for VelloCircle {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::Circle::new(kurbo::Point::default(), self.radius)
+    }
+}
+
+impl VectorBorder for VelloCircle {
+    fn border_translation(&self, time: f64) -> DVec2 {
+        DVec2::new(0.0, self.radius).lerp(DVec2::new(0.0, 0.0), time)
+    }
+
+    fn border_tangent(&self, time: f64) -> f64 {
+        self.border_translation(time).to_angle()
     }
 }

@@ -15,12 +15,28 @@ fn setup(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
 
-fn render_shapes(mut commands: Commands) {
+fn render_shapes(mut commands: Commands, shapes: Option<ResMut<Shapes>>) {
+    let Some(shapes) = shapes else { return };
+    let shapes = shapes.into_inner();
+
+    // Head
+    let head_scene = vello::Scene::default();
+
+    let head_shape = (VelloCircle::new(10.0), Fill::new().with_color(Color::WHITE));
+    commands
+        .spawn(VelloSceneBundle {
+            scene: VelloScene::from(head_scene.clone()),
+            // visibility: Visibility::Hidden,
+            ..default()
+        })
+        .insert(head_shape);
+
     // Line
     let line = (
         VelloLine::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
+        Head::new(shapes.insert(head_scene), 10.0, DVec2::splat(0.0), 0.0),
     );
 
     // Rectangle

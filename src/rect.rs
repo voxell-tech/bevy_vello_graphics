@@ -1,6 +1,8 @@
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::prelude::*;
 
+use crate::VectorBorder;
+
 use super::VelloVector;
 
 #[derive(Component, Default, Debug, Clone, Copy)]
@@ -44,5 +46,21 @@ impl VelloVector for VelloRect {
             self.size.y * (1.0 - self.anchor.y),
             self.radius,
         )
+    }
+}
+
+impl VectorBorder for VelloRect {
+    fn border_translation(&self, time: f64) -> DVec2 {
+        DVec2::new(-self.size.x * self.anchor.x, -self.size.y * self.anchor.y).lerp(
+            DVec2::new(
+                self.size.x * (1.0 - self.anchor.x),
+                self.size.y * (1.0 - self.anchor.y),
+            ),
+            time,
+        )
+    }
+
+    fn border_tangent(&self, _time: f64) -> f64 {
+        0.0
     }
 }
