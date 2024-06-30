@@ -2,17 +2,28 @@ use bevy::{math::DVec2, prelude::*, utils::Uuid};
 
 use bevy_vello::prelude::*;
 
-#[derive(Default, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Default, Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct ShapeId(Uuid);
+impl ShapeId {
+    pub fn get(&self) -> Uuid {
+        self.0
+    }
+}
 
-#[derive(Component, Copy, Clone)]
+impl From<Uuid> for ShapeId {
+    fn from(value: Uuid) -> Self {
+        Self(value)
+    }
+}
+
+#[derive(Component, Copy, Clone, Debug)]
 pub struct Head {
     pub shape_id: ShapeId,
     pub time: f64,
 
     pub scale: f64,
-    pub offset: f32,
-    pub rotation_offset: f32,
+    pub offset: DVec2,
+    pub rotation_offset: f64,
 }
 
 impl Default for Head {
@@ -21,14 +32,14 @@ impl Default for Head {
             shape_id: ShapeId(Uuid::new_v4()),
             time: 1.0,
             scale: 1.0,
-            offset: 0.0,
+            offset: DVec2::default(),
             rotation_offset: 0.0,
         }
     }
 }
 
 impl Head {
-    pub fn new(shape_id: ShapeId, scale: f64, offset: f32, rotation_offset: f32) -> Self {
+    pub fn new(shape_id: ShapeId, scale: f64, offset: DVec2, rotation_offset: f64) -> Self {
         Self {
             shape_id,
             scale,
@@ -48,12 +59,17 @@ impl Head {
         self
     }
 
-    pub fn with_offset(mut self, offset: f32) -> Self {
+    pub fn with_offset(mut self, offset: DVec2) -> Self {
         self.offset = offset;
         self
     }
 
-    pub fn with_rotation_offset(mut self, rotation_offset: f32) -> Self {
+    pub fn with_offset_splat(mut self, offset: f64) -> Self {
+        self.offset = DVec2::splat(offset);
+        self
+    }
+
+    pub fn with_rotation_offset(mut self, rotation_offset: f64) -> Self {
         self.rotation_offset = rotation_offset;
         self
     }

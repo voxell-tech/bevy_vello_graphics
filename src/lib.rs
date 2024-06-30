@@ -86,19 +86,16 @@ pub(crate) fn build_vector<Vector: VelloVector + Component + VectorBorder>() -> 
 
 #[allow(clippy::type_complexity)]
 fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
-    mut q_vectors: Query<
-        (&HeadEquipt, &Head, &mut VelloScene),
-        (Without<Stroke>, Or<(Changed<HeadEquipt>, Changed<Fill>)>),
-    >,
+    mut q_vectors: Query<(&HeadEquipt, &Head, &mut VelloScene)>,
 
     shapes: Option<Res<Shapes>>,
 ) {
     let Some(shapes) = shapes else { return };
 
     for (vector, head, mut scene) in q_vectors.iter_mut() {
-        let translation = vector.border_translation(head.time);
+        let translation = vector.border_translation(head.time) + head.offset;
         let translation = kurbo::Vec2::new(translation.x, translation.y);
-        let tangent = vector.border_tangent(head.time);
+        let tangent = vector.border_tangent(head.time) + head.rotation_offset;
         let rotation = tangent.atan();
 
         let transform = kurbo::Affine::default()
@@ -106,8 +103,7 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
             .then_rotate(rotation)
             .then_scale(head.scale);
 
-        let head_scene = shapes.scenes.get(&head.shape_id);
-        if let Some(head_scene) = head_scene {
+        if let Some(head_scene) = shapes.scenes.get(&head.shape_id) {
             scene.append(head_scene, Some(transform));
         }
     }
@@ -117,10 +113,7 @@ fn append_heads<HeadEquipt: VelloVector + VectorBorder + Component>(
 fn build_fill_only_vector<Vector: VelloVector + Component>(
     mut q_vectors: Query<
         (&Vector, &Fill, &mut VelloScene),
-        (
-            Without<Stroke>,
-            Or<(Without<Head>, Changed<Vector>, Changed<Fill>)>,
-        ),
+        (Without<Stroke>, Or<(Changed<Vector>, Changed<Fill>)>),
     >,
 ) {
     for (vector, fill, mut scene) in q_vectors.iter_mut() {

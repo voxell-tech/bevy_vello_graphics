@@ -22,20 +22,21 @@ fn render_shapes(mut commands: Commands, shapes: Option<ResMut<Shapes>>) {
     // Head
     let head_scene = vello::Scene::default();
 
-    let head = (VelloCircle::new(1.0), Fill::new().with_color(Color::WHITE));
+    let head_shape = (VelloCircle::new(10.0), Fill::new().with_color(Color::WHITE));
     commands
         .spawn(VelloSceneBundle {
             scene: VelloScene::from(head_scene.clone()),
+            // visibility: Visibility::Hidden,
             ..default()
         })
-        .insert(head);
+        .insert(head_shape);
 
     // Line
     let line = (
         VelloLine::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
-        Head::default().with_shape_id(shapes.insert(head_scene)),
+        Head::new(shapes.insert(head_scene), 10.0, DVec2::splat(0.0), 0.0),
     );
 
     // Rectangle
