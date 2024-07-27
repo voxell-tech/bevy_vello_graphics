@@ -16,12 +16,13 @@ impl Brush {
     }
 
     pub fn from_color(color: Color) -> Self {
+        let color = color.to_linear();
         Self {
             value: peniko::Brush::Solid(peniko::Color::rgba(
-                color.r() as f64,
-                color.g() as f64,
-                color.b() as f64,
-                color.a() as f64,
+                color.red as f64,
+                color.green as f64,
+                color.blue as f64,
+                color.alpha as f64,
             )),
             ..default()
         }
