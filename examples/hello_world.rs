@@ -1,4 +1,4 @@
-use bevy::{math::DVec2, prelude::*};
+use bevy::{color::palettes::css, math::DVec2, prelude::*};
 use bevy_vello_graphics::prelude::*;
 
 fn main() {
@@ -42,16 +42,16 @@ fn render_shapes(mut commands: Commands, shapes: Option<ResMut<Shapes>>) {
     // Rectangle
     let rect = (
         VelloRect::new(100.0, 200.0),
-        Fill::new().with_color(Color::ORANGE),
-        Stroke::new(5.0).with_color(Color::RED),
+        Fill::new().with_color(css::ORANGE.into()),
+        Stroke::new(5.0).with_color(css::RED.into()),
         Transform::from_xyz(-100.0, 0.0, 0.0),
     );
 
     // Circle
     let circle = (
         VelloCircle::new(50.0),
-        Fill::new().with_color(Color::YELLOW_GREEN),
-        Stroke::new(5.0).with_color(Color::DARK_GREEN),
+        Fill::new().with_color(css::YELLOW_GREEN.into()),
+        Stroke::new(5.0).with_color(css::DARK_GREEN.into()),
         Transform::from_xyz(100.0, 0.0, 0.0),
     );
 
@@ -62,16 +62,11 @@ fn render_shapes(mut commands: Commands, shapes: Option<ResMut<Shapes>>) {
     // Bézier Path
     let bezier_path = (
         VelloBezPath::new().with_path(bez_path),
-        Stroke::new(4.0).with_color(Color::YELLOW),
+        Stroke::new(4.0).with_color(css::YELLOW.into()),
     );
 
-    commands.spawn(VelloSceneBundle::default()).insert(line);
-
-    commands.spawn(VelloSceneBundle::default()).insert(rect);
-
-    commands.spawn(VelloSceneBundle::default()).insert(circle);
-
-    commands
-        .spawn(VelloSceneBundle::default())
-        .insert(bezier_path);
+    commands.spawn((VelloSceneBundle::default(), line));
+    commands.spawn((VelloSceneBundle::default(), rect));
+    commands.spawn((VelloSceneBundle::default(), circle));
+    commands.spawn((VelloSceneBundle::default(), bezier_path));
 }
