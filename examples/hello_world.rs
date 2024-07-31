@@ -1,4 +1,5 @@
 use bevy::{color::palettes::css, math::DVec2, prelude::*};
+use bevy_vello::prelude::*;
 use bevy_vello_graphics::prelude::*;
 
 fn main() {
