@@ -44,20 +44,20 @@ impl Plugin for VelloGraphicsPlugin {
 
         app.add_plugins(VelloPlugin)
             .add_plugins((
-                CompositePlugin::<VelloRect>::default(),
-                CompositePlugin::<VelloCircle>::default(),
-                CompositePlugin::<VelloLine>::default(),
-                CompositePlugin::<VelloBezPath>::default(),
+                VectorPlugin::<VelloRect>::default(),
+                VectorPlugin::<VelloCircle>::default(),
+                VectorPlugin::<VelloLine>::default(),
+                VectorPlugin::<VelloBezPath>::default(),
             ))
             .add_systems(Update, composite.in_set(Composite));
     }
 }
 
-/// Plugin for compositing vector that implements [`Vector`] and [`VectorBorder`].
+/// Plugin for drawing vector that implements [`Vector`].
 #[derive(Default)]
-pub(crate) struct CompositePlugin<V: Vector + Component>(PhantomData<V>);
+pub struct VectorPlugin<V: Vector + Component>(PhantomData<V>);
 
-impl<V: Vector + Component> Plugin for CompositePlugin<V>
+impl<V: Vector + Component> Plugin for VectorPlugin<V>
 where
     V: Default,
 {
@@ -95,6 +95,7 @@ fn composite(
     }
 }
 
+/// A holder of [`vello::Scene`].
 #[derive(Component, Default, Clone)]
 pub struct SceneHolder<T>(vello::Scene, PhantomData<T>);
 
