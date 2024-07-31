@@ -3,7 +3,7 @@ use bevy_vello::prelude::*;
 
 use crate::VectorBorder;
 
-use super::VelloVector;
+use super::Vector;
 
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloCircle {
@@ -21,7 +21,7 @@ impl VelloCircle {
     }
 }
 
-impl VelloVector for VelloCircle {
+impl Vector for VelloCircle {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::Circle::new(kurbo::Point::default(), self.radius)
     }

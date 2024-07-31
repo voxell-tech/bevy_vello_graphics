@@ -3,7 +3,7 @@ use bevy_vello::prelude::*;
 
 use crate::VectorBorder;
 
-use super::VelloVector;
+use super::Vector;
 
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloLine {
@@ -34,7 +34,7 @@ impl VelloLine {
     }
 }
 
-impl VelloVector for VelloLine {
+impl Vector for VelloLine {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::Line::new(
             kurbo::Point::new(self.p0.x, self.p0.y),
@@ -45,10 +45,11 @@ impl VelloVector for VelloLine {
 
 impl VectorBorder for VelloLine {
     fn border_translation(&self, time: f64) -> DVec2 {
+        println!("{}, {}", self.p0, self.p1);
         self.p0.lerp(self.p1, time)
     }
 
     fn border_tangent(&self, _time: f64) -> f64 {
-        ((self.p1.y - self.p0.y) / (self.p1.x - self.p0.x)).atan()
+        DVec2::normalize_or_zero(self.p1 - self.p0).to_angle()
     }
 }

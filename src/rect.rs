@@ -3,7 +3,7 @@ use bevy_vello::prelude::*;
 
 use crate::VectorBorder;
 
-use super::VelloVector;
+use super::Vector;
 
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloRect {
@@ -37,7 +37,7 @@ impl VelloRect {
     }
 }
 
-impl VelloVector for VelloRect {
+impl Vector for VelloRect {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::RoundedRect::new(
             -self.size.x * self.anchor.x,

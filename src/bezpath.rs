@@ -3,7 +3,7 @@ use bevy_vello::prelude::*;
 
 use crate::VectorBorder;
 
-use super::VelloVector;
+use super::Vector;
 
 /// Vello Bézier path component.
 #[derive(Component, Debug, Clone)]
@@ -37,7 +37,7 @@ impl Default for VelloBezPath {
     }
 }
 
-impl VelloVector for VelloBezPath {
+impl Vector for VelloBezPath {
     fn shape(&self) -> impl kurbo::Shape {
         let pathels = self.path.elements();
         // TODO(perf): Prevent from creating a new BezPath for each animation change.
