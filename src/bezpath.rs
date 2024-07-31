@@ -159,7 +159,7 @@ impl VectorBorder for VelloBezPath {
         DVec2::new(first.x, first.y).lerp(DVec2::new(last.x, last.y), time)
     }
 
-    fn border_tangent(&self, time: f64) -> f64 {
+    fn border_rotation(&self, time: f64) -> f64 {
         self.border_translation(time).to_angle()
     }
 }

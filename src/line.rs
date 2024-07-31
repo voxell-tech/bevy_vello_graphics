@@ -45,11 +45,10 @@ impl Vector for VelloLine {
 
 impl VectorBorder for VelloLine {
     fn border_translation(&self, time: f64) -> DVec2 {
-        println!("{}, {}", self.p0, self.p1);
         self.p0.lerp(self.p1, time)
     }
 
-    fn border_tangent(&self, _time: f64) -> f64 {
+    fn border_rotation(&self, _time: f64) -> f64 {
         DVec2::normalize_or_zero(self.p1 - self.p0).to_angle()
     }
 }

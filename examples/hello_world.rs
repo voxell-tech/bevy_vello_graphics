@@ -8,6 +8,7 @@ fn main() {
         // Custom Plugins
         .add_plugins(VelloGraphicsPlugin)
         .add_systems(Startup, (setup, render_shapes))
+        .add_systems(Update, animation)
         .run();
 }
 
@@ -19,6 +20,7 @@ fn render_shapes(mut commands: Commands) {
     // Line
     let line = (
         VelloLine::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
+        Fill::new().with_color(Color::WHITE),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
         HeadBundle::new(VelloRect::new(20.0, 20.0)),
@@ -56,4 +58,13 @@ fn render_shapes(mut commands: Commands) {
     commands
         .spawn(VelloSceneBundle::default())
         .insert(bezier_path);
+}
+
+fn animation(mut q_heads: Query<&mut Head>, time: Res<Time>) {
+    let factor = time.elapsed_seconds_f64().sin() * 0.5 + 0.5;
+
+    for mut head in q_heads.iter_mut() {
+        head.time = factor;
+        head.rotation_offset = std::f64::consts::TAU * factor;
+    }
 }

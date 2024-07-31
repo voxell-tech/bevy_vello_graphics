@@ -32,7 +32,7 @@ impl VectorBorder for VelloCircle {
         DVec2::new(0.0, self.radius).lerp(DVec2::new(0.0, 0.0), time)
     }
 
-    fn border_tangent(&self, time: f64) -> f64 {
+    fn border_rotation(&self, time: f64) -> f64 {
         self.border_translation(time).to_angle()
     }
 }

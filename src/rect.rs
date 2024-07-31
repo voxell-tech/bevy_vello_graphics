@@ -60,7 +60,7 @@ impl VectorBorder for VelloRect {
         )
     }
 
-    fn border_tangent(&self, _time: f64) -> f64 {
+    fn border_rotation(&self, _time: f64) -> f64 {
         0.0
     }
 }
