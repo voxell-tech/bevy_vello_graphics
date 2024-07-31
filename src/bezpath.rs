@@ -1,4 +1,6 @@
-use bevy::{math::DVec2, prelude::*};
+use bevy_ecs::prelude::*;
+use bevy_math::DVec2;
+use bevy_utils::prelude::*;
 use bevy_vello::prelude::*;
 
 use super::Vector;

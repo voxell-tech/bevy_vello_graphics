@@ -1,8 +1,9 @@
 use std::marker::PhantomData;
 
+use bevy_app::prelude::*;
+use bevy_ecs::prelude::*;
 pub use bevy_vello;
 
-use bevy::prelude::*;
 use bevy_vello::VelloPlugin;
 use head::{draw_heads, prepare_heads, HeadScene};
 use prelude::*;
