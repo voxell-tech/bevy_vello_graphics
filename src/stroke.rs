@@ -1,3 +1,5 @@
+//! A Bevy friendly wrapper around [`kurbo::Stroke`].
+
 use bevy_color::Color;
 use bevy_ecs::prelude::*;
 use bevy_utils::prelude::*;

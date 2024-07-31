@@ -1,3 +1,5 @@
+//! A Bevy friendly wrapper around [`peniko::Brush`].
+
 use bevy_color::Color;
 use bevy_utils::prelude::*;
 use bevy_vello::prelude::*;

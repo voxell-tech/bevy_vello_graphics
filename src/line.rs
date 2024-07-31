@@ -1,9 +1,12 @@
+//! A Bevy friendly wrapper around [`kurbo::Line`].
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_vello::prelude::*;
 
 use super::Vector;
 
+/// Vello line component.
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloLine {
     pub p0: DVec2,

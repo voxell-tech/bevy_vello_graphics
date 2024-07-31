@@ -1,3 +1,5 @@
+//! A Bevy friendly wrapper around [`kurbo::Circle`].
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_vello::prelude::*;

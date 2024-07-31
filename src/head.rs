@@ -1,10 +1,12 @@
+//! Drawing [`HeadVector`] on the border of [`Vector`] shapes.
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_vello::vello::{self, kurbo};
 
 use crate::{Fill, SceneHolder, Stroke, Vector};
 
-/// Prepare head transform for drawing head on top of vector shape.
+/// Prepare [`HeadTransform`]s for drawing [`HeadVector`]s on the border of [`Vector`] shapes.
 #[allow(clippy::type_complexity)]
 pub(super) fn prepare_heads<V: Vector + Component>(
     mut q_vectors: Query<(&V, &Head, &mut HeadTransform), Or<(Changed<V>, Changed<Head>)>>,
@@ -20,7 +22,7 @@ pub(super) fn prepare_heads<V: Vector + Component>(
     }
 }
 
-/// Draw head vector shape.
+/// Draw [`HeadVector`] shapes.
 #[allow(clippy::type_complexity)]
 pub(super) fn draw_heads<V: Vector + Component>(
     mut commands: Commands,
@@ -69,8 +71,10 @@ pub(super) fn draw_heads<V: Vector + Component>(
     }
 }
 
+/// Marker struct of a vector scene for [`SceneHolder`].
 pub struct HeadScene;
 
+/// Bundle of components needed for drawing a [`HeadVector`] on the border of a [`Vector`] shape.
 #[derive(Bundle, Copy, Clone, Debug)]
 pub struct HeadBundle<V: Vector>
 where
@@ -94,9 +98,11 @@ where
     }
 }
 
+/// Vector defining the shape of the head.
 #[derive(Component, Debug, Clone, Copy)]
 pub struct HeadVector<V: Vector>(pub V);
 
+/// Positioning configurations of a head.
 #[derive(Component, Debug, Clone, Copy)]
 pub struct Head {
     /// Percentage position of the shape's border.
@@ -151,6 +157,11 @@ impl Head {
     }
 }
 
+/// A read-only computed [`Head`] transform for drawing [`HeadVector`] on top of [`Vector`].
+///
+/// The transform is computed in the [`PrepareHead`][PrepareHead] system set.
+///
+/// [PrepareHead]: crate::PrepareHead
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct HeadTransform(kurbo::Affine);
 

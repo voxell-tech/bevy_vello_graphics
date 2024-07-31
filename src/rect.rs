@@ -1,13 +1,19 @@
+//! A Bevy friendly wrapper around [`kurbo::RoundedRect`].
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_vello::prelude::*;
 
 use super::Vector;
 
+/// Vello rect component.
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloRect {
+    /// Width and height.
     pub size: DVec2,
+    /// Origin of the rect.
     pub anchor: DVec2,
+    /// Border radius.
     pub radius: f64,
 }
 

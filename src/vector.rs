@@ -1,9 +1,12 @@
+//! Drawing [`Vector`] shapes.
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_vello::vello::{self, kurbo};
 
 use crate::{Fill, SceneHolder, Stroke};
 
+/// Draw [`Vector`] shapes.
 #[allow(clippy::type_complexity)]
 pub(super) fn draw_vectors<V: Vector + Component>(
     mut commands: Commands,
@@ -41,6 +44,7 @@ pub(super) fn draw_vectors<V: Vector + Component>(
     }
 }
 
+/// Marker struct of a vector scene for [`SceneHolder`].
 pub struct VectorScene;
 
 pub trait Vector {

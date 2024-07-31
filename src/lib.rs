@@ -1,3 +1,7 @@
+//! # Bevy Vello Graphics
+//!
+//! A Bevy friendly wrapper around [Vello][vello] graphics.
+
 use std::marker::PhantomData;
 
 use bevy_app::prelude::*;
@@ -36,6 +40,7 @@ pub mod prelude {
     pub use bevy_vello::prelude::*;
 }
 
+/// A plugin that automates the pipeline of drawing and compositing vello shapes.
 pub struct VelloGraphicsPlugin;
 
 impl Plugin for VelloGraphicsPlugin {
@@ -54,7 +59,7 @@ impl Plugin for VelloGraphicsPlugin {
     }
 }
 
-/// Plugin for drawing vector that implements [`Vector`].
+/// A plugin for drawing [`Vector`].
 #[derive(Default)]
 pub struct VectorPlugin<V: Vector + Component>(PhantomData<V>);
 
@@ -96,7 +101,7 @@ fn composite(
     }
 }
 
-/// A holder of [`vello::Scene`].
+/// A read-only holder of [`vello::Scene`].
 #[derive(Component, Default, Clone)]
 pub struct SceneHolder<T>(vello::Scene, PhantomData<T>);
 
@@ -110,14 +115,18 @@ impl<T> SceneHolder<T> {
     }
 }
 
+/// System set for drawing vector shape.
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct DrawVector;
 
+/// System set for preparing vector shape's head data.
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct PrepareHead;
 
+/// System set for drawing vector shape's head.
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct DrawHead;
 
+/// System set for compositing all [`SceneHolder`]s into [`VelloScene`].
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Composite;

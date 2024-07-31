@@ -1,3 +1,5 @@
+//! A Bevy friendly wrapper around [`kurbo::BezPath`] with tracing capability.
+
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_utils::prelude::*;
@@ -8,7 +10,9 @@ use super::Vector;
 /// Vello Bézier path component.
 #[derive(Component, Debug, Clone)]
 pub struct VelloBezPath {
+    /// Bézier path.
     pub path: kurbo::BezPath,
+    /// Tracing percentage from the start to the end of the entire Bézier path.
     pub trace: f32,
 }
 
@@ -122,6 +126,7 @@ impl Vector for VelloBezPath {
     }
 }
 
+/// Interpolate [`kurbo::PathEl`].
 fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f32) -> kurbo::PathEl {
     if t == 1.0 {
         return pathel;
