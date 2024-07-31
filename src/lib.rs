@@ -39,15 +39,17 @@ pub struct VelloGraphicsPlugin;
 
 impl Plugin for VelloGraphicsPlugin {
     fn build(&self, app: &mut App) {
-        app.configure_sets(Update, (DrawVector, DrawHead, Composite).chain());
+        app.configure_sets(Update, ((DrawVector, DrawHead), Composite).chain());
         app.configure_sets(Update, (PrepareHead, DrawHead).chain());
 
-        app.add_plugins(VelloPlugin).add_plugins((
-            CompositePlugin::<VelloRect>::default(),
-            CompositePlugin::<VelloCircle>::default(),
-            CompositePlugin::<VelloLine>::default(),
-            CompositePlugin::<VelloBezPath>::default(),
-        ));
+        app.add_plugins(VelloPlugin)
+            .add_plugins((
+                CompositePlugin::<VelloRect>::default(),
+                CompositePlugin::<VelloCircle>::default(),
+                CompositePlugin::<VelloLine>::default(),
+                CompositePlugin::<VelloBezPath>::default(),
+            ))
+            .add_systems(Update, composite.in_set(Composite));
     }
 }
 
@@ -62,8 +64,7 @@ where
     fn build(&self, app: &mut App) {
         app.add_systems(Update, draw_vectors::<V>.in_set(DrawVector))
             .add_systems(Update, draw_heads::<V>.in_set(DrawHead))
-            .add_systems(Update, prepare_heads::<V>.in_set(PrepareHead))
-            .add_systems(Update, composite);
+            .add_systems(Update, prepare_heads::<V>.in_set(PrepareHead));
     }
 }
 
@@ -71,18 +72,39 @@ where
 fn composite(
     mut commands: Commands,
     q_scenes: Query<
-        (Entity, &VectorScene, Option<&HeadScene>),
-        Or<(Changed<VectorScene>, Changed<HeadScene>)>,
+        (
+            Entity,
+            &SceneHolder<VectorScene>,
+            Option<&SceneHolder<HeadScene>>,
+        ),
+        Or<(
+            Changed<SceneHolder<VectorScene>>,
+            Changed<SceneHolder<HeadScene>>,
+        )>,
     >,
 ) {
     for (entity, vector_scene, head_scene) in q_scenes.iter() {
-        let mut scene = vector_scene.0.clone();
+        let mut scene = vello::Scene::new();
+        scene.append(vector_scene.scene(), None);
 
         if let Some(head_scene) = head_scene {
-            scene.append(&head_scene.0, None);
+            scene.append(head_scene.scene(), None);
         }
 
         commands.entity(entity).insert(VelloScene::from(scene));
+    }
+}
+
+#[derive(Component, Default, Clone)]
+pub struct SceneHolder<T>(vello::Scene, PhantomData<T>);
+
+impl<T> SceneHolder<T> {
+    pub fn new(scene: vello::Scene) -> Self {
+        Self(scene, PhantomData)
+    }
+
+    pub fn scene(&self) -> &vello::Scene {
+        &self.0
     }
 }
 
@@ -95,6 +117,5 @@ pub struct PrepareHead;
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct DrawHead;
 
-/// Composite
 #[derive(SystemSet, Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Composite;

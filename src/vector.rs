@@ -1,7 +1,7 @@
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::vello::{self, kurbo};
 
-use crate::{Fill, Stroke};
+use crate::{Fill, SceneHolder, Stroke};
 
 #[allow(clippy::type_complexity)]
 pub(super) fn draw_vectors<V: Vector + Component>(
@@ -34,12 +34,13 @@ pub(super) fn draw_vectors<V: Vector + Component>(
             );
         }
 
-        commands.entity(entity).insert(VectorScene(scene));
+        commands
+            .entity(entity)
+            .insert(SceneHolder::<VectorScene>::new(scene));
     }
 }
 
-#[derive(Component, Default, Clone)]
-pub struct VectorScene(pub vello::Scene);
+pub struct VectorScene;
 
 pub trait Vector {
     /// Returns vector graphics that implements [`kurbo::Shape`].

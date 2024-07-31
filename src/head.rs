@@ -1,7 +1,7 @@
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::vello::{self, kurbo};
 
-use crate::{Fill, Stroke, Vector};
+use crate::{Fill, SceneHolder, Stroke, Vector};
 
 /// Prepare head transform for drawing head on top of vector shape.
 #[allow(clippy::type_complexity)]
@@ -62,12 +62,13 @@ pub(super) fn draw_heads<V: Vector + Component>(
             );
         }
 
-        commands.entity(entity).insert(HeadScene(scene));
+        commands
+            .entity(entity)
+            .insert(SceneHolder::<HeadScene>::new(scene));
     }
 }
 
-#[derive(Component, Default, Clone)]
-pub struct HeadScene(pub vello::Scene);
+pub struct HeadScene;
 
 #[derive(Bundle, Copy, Clone, Debug)]
 pub struct HeadBundle<V: Vector>
@@ -94,9 +95,6 @@ where
 
 #[derive(Component, Debug, Clone, Copy)]
 pub struct HeadVector<V: Vector>(pub V);
-
-#[derive(Component, Default, Debug, Clone, Copy)]
-pub struct HeadTransform(pub kurbo::Affine);
 
 #[derive(Component, Debug, Clone, Copy)]
 pub struct Head {
@@ -149,5 +147,14 @@ impl Head {
     pub fn with_rotation_offset(mut self, rotation_offset: f64) -> Self {
         self.rotation_offset = rotation_offset;
         self
+    }
+}
+
+#[derive(Component, Default, Debug, Clone, Copy)]
+pub struct HeadTransform(kurbo::Affine);
+
+impl HeadTransform {
+    pub fn affine(&self) -> kurbo::Affine {
+        self.0
     }
 }
