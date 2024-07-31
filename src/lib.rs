@@ -2,11 +2,13 @@
 //!
 //! A Bevy friendly wrapper around [Vello][vello] graphics.
 
+pub use bevy_vello;
+
 use std::marker::PhantomData;
 
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
-pub use bevy_vello;
+use bevy_vello::prelude::*;
 
 use bevy_vello::VelloPlugin;
 use head::{draw_heads, prepare_heads, HeadScene};
@@ -36,8 +38,6 @@ pub mod prelude {
         vector::Vector,
         VelloGraphicsPlugin,
     };
-
-    pub use bevy_vello::prelude::*;
 }
 
 /// A plugin that automates the pipeline of drawing and compositing vello shapes.
