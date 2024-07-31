@@ -4,9 +4,9 @@ pub use bevy_vello;
 
 use bevy::prelude::*;
 use bevy_vello::VelloPlugin;
-use head::{HeadPlugin, HeadScene, PrepareHeadPlugin};
+use head::{draw_heads, prepare_heads, HeadScene};
 use prelude::*;
-use vector::{VectorPlugin, VectorScene};
+use vector::{draw_vectors, VectorScene};
 
 pub mod bezpath;
 pub mod brush;
@@ -28,7 +28,7 @@ pub mod prelude {
         line::VelloLine,
         rect::VelloRect,
         stroke::Stroke,
-        vector::{Vector, VectorBorder},
+        vector::Vector,
         VelloGraphicsPlugin,
     };
 
@@ -53,19 +53,17 @@ impl Plugin for VelloGraphicsPlugin {
 
 /// Plugin for compositing vector that implements [`Vector`] and [`VectorBorder`].
 #[derive(Default)]
-pub(crate) struct CompositePlugin<V: Vector + VectorBorder + Component>(PhantomData<V>);
+pub(crate) struct CompositePlugin<V: Vector + Component>(PhantomData<V>);
 
-impl<V: Vector + VectorBorder + Component> Plugin for CompositePlugin<V>
+impl<V: Vector + Component> Plugin for CompositePlugin<V>
 where
     V: Default,
 {
     fn build(&self, app: &mut App) {
-        app.add_plugins((
-            VectorPlugin::<V>::default(),
-            PrepareHeadPlugin::<V>::default(),
-            HeadPlugin::<V>::default(),
-        ))
-        .add_systems(Update, composite);
+        app.add_systems(Update, draw_vectors::<V>.in_set(DrawVector))
+            .add_systems(Update, draw_heads::<V>.in_set(DrawHead))
+            .add_systems(Update, prepare_heads::<V>.in_set(PrepareHead))
+            .add_systems(Update, composite);
     }
 }
 

@@ -1,8 +1,6 @@
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::prelude::*;
 
-use crate::VectorBorder;
-
 use super::Vector;
 
 /// Vello Bézier path component.
@@ -98,6 +96,28 @@ impl Vector for VelloBezPath {
 
         path
     }
+
+    fn border_translation(&self, time: f64) -> DVec2 {
+        // TODO: def should not unwrap here
+        let first = self.path.elements()[0]
+            .end_point()
+            .unwrap_or_default()
+            .to_vec2();
+        let last = self
+            .path
+            .iter()
+            .last()
+            .unwrap()
+            .end_point()
+            .unwrap_or_default()
+            .to_vec2();
+
+        DVec2::new(first.x, first.y).lerp(DVec2::new(last.x, last.y), time)
+    }
+
+    fn border_rotation(&self, time: f64) -> f64 {
+        self.border_translation(time).to_angle()
+    }
 }
 
 fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f32) -> kurbo::PathEl {
@@ -137,29 +157,5 @@ fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f32) -> kurbo::Path
             kurbo::PathEl::CurveTo(x0, y0, end_p)
         }
         kurbo::PathEl::ClosePath => kurbo::PathEl::ClosePath,
-    }
-}
-
-impl VectorBorder for VelloBezPath {
-    fn border_translation(&self, time: f64) -> DVec2 {
-        // TODO: def should not unwrap here
-        let first = self.path.elements()[0]
-            .end_point()
-            .unwrap_or_default()
-            .to_vec2();
-        let last = self
-            .path
-            .iter()
-            .last()
-            .unwrap()
-            .end_point()
-            .unwrap_or_default()
-            .to_vec2();
-
-        DVec2::new(first.x, first.y).lerp(DVec2::new(last.x, last.y), time)
-    }
-
-    fn border_rotation(&self, time: f64) -> f64 {
-        self.border_translation(time).to_angle()
     }
 }

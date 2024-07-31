@@ -1,32 +1,11 @@
-use std::marker::PhantomData;
-
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::vello::{self, kurbo};
 
-use crate::{DrawHead, Fill, PrepareHead, Stroke, Vector, VectorBorder};
+use crate::{Fill, Stroke, Vector};
 
 /// Prepare head transform for drawing head on top of vector shape.
-#[derive(Default)]
-pub(super) struct PrepareHeadPlugin<V: VectorBorder + Component>(PhantomData<V>);
-
-impl<V: VectorBorder + Component> Plugin for PrepareHeadPlugin<V> {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, prepare_heads::<V>.in_set(PrepareHead));
-    }
-}
-
-/// Draw head vector shape.
-#[derive(Default)]
-pub(super) struct HeadPlugin<V: Vector + Component>(PhantomData<V>);
-
-impl<V: Vector + Component> Plugin for HeadPlugin<V> {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, draw_heads::<V>.in_set(DrawHead));
-    }
-}
-
 #[allow(clippy::type_complexity)]
-fn prepare_heads<V: VectorBorder + Component>(
+pub(super) fn prepare_heads<V: Vector + Component>(
     mut q_vectors: Query<(&V, &Head, &mut HeadTransform), Or<(Changed<V>, Changed<Head>)>>,
 ) {
     for (vector, head, mut head_transform) in q_vectors.iter_mut() {
@@ -40,8 +19,9 @@ fn prepare_heads<V: VectorBorder + Component>(
     }
 }
 
+/// Draw head vector shape.
 #[allow(clippy::type_complexity)]
-fn draw_heads<V: Vector + Component>(
+pub(super) fn draw_heads<V: Vector + Component>(
     mut commands: Commands,
     q_vectors: Query<
         (

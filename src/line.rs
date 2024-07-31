@@ -1,8 +1,6 @@
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::prelude::*;
 
-use crate::VectorBorder;
-
 use super::Vector;
 
 #[derive(Component, Default, Debug, Clone, Copy)]
@@ -41,9 +39,7 @@ impl Vector for VelloLine {
             kurbo::Point::new(self.p1.x, self.p1.y),
         )
     }
-}
 
-impl VectorBorder for VelloLine {
     fn border_translation(&self, time: f64) -> DVec2 {
         self.p0.lerp(self.p1, time)
     }

@@ -1,21 +1,10 @@
-use std::marker::PhantomData;
-
 use bevy::{math::DVec2, prelude::*};
 use bevy_vello::vello::{self, kurbo};
 
-use crate::{DrawVector, Fill, Stroke};
-
-#[derive(Default)]
-pub(super) struct VectorPlugin<V: Vector + Component>(PhantomData<V>);
-
-impl<V: Vector + Component> Plugin for VectorPlugin<V> {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, draw_vectors::<V>.in_set(DrawVector));
-    }
-}
+use crate::{Fill, Stroke};
 
 #[allow(clippy::type_complexity)]
-fn draw_vectors<V: Vector + Component>(
+pub(super) fn draw_vectors<V: Vector + Component>(
     mut commands: Commands,
     q_vectors: Query<
         (Entity, &V, Option<&Fill>, Option<&Stroke>),
@@ -53,10 +42,8 @@ fn draw_vectors<V: Vector + Component>(
 pub struct VectorScene(pub vello::Scene);
 
 pub trait Vector {
+    /// Returns vector graphics that implements [`kurbo::Shape`].
     fn shape(&self) -> impl kurbo::Shape;
-}
-
-pub trait VectorBorder {
     /// Translation of the border at a specific `time` value.
     fn border_translation(&self, time: f64) -> DVec2;
     /// The rotation at the tangent of the border at a specific `time` value.
