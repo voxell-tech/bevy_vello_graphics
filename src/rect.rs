@@ -2,7 +2,7 @@
 
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
-use bevy_vello::prelude::*;
+use bevy_vello::vello::kurbo;
 
 use super::Vector;
 
@@ -51,19 +51,5 @@ impl Vector for VelloRect {
             self.size.y * (1.0 - self.anchor.y),
             self.radius,
         )
-    }
-
-    fn border_translation(&self, time: f64) -> DVec2 {
-        DVec2::new(-self.size.x * self.anchor.x, -self.size.y * self.anchor.y).lerp(
-            DVec2::new(
-                self.size.x * (1.0 - self.anchor.x),
-                self.size.y * (1.0 - self.anchor.y),
-            ),
-            time,
-        )
-    }
-
-    fn border_rotation(&self, _time: f64) -> f64 {
-        0.0
     }
 }

@@ -3,7 +3,7 @@
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_utils::prelude::*;
-use bevy_vello::prelude::*;
+use bevy_vello::{prelude::*, vello::kurbo::PathEl};
 
 use super::Vector;
 
@@ -104,21 +104,17 @@ impl Vector for VelloBezPath {
     }
 
     fn border_translation(&self, time: f64) -> DVec2 {
-        // TODO: def should not unwrap here
-        let first = self.path.elements()[0]
-            .end_point()
-            .unwrap_or_default()
-            .to_vec2();
-        let last = self
-            .path
-            .iter()
-            .last()
-            .unwrap()
-            .end_point()
-            .unwrap_or_default()
-            .to_vec2();
+        let elements = self.path.elements();
+        let elen = elements.len();
+        let index = (time * elen as f64) as usize;
+        let path: Vec<&PathEl> = elements.iter().skip(index.max(1) - 1).take(2).collect();
 
-        DVec2::new(first.x, first.y).lerp(DVec2::new(last.x, last.y), time)
+        let current = path[0].end_point().unwrap_or_default().to_vec2();
+        let next = path[path.len() - 1]
+            .end_point()
+            .unwrap_or_default()
+            .to_vec2();
+        DVec2::new(current.x, current.y).lerp(DVec2::new(next.x, next.y), time % elen as f64)
     }
 
     fn border_rotation(&self, time: f64) -> f64 {

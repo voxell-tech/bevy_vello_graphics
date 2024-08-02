@@ -19,7 +19,7 @@ fn setup(mut commands: Commands) {
 fn render_shapes(mut commands: Commands) {
     // Line
     let line = (
-        VelloLine::new(DVec2::new(0.0, 100.0), DVec2::new(0.0, -100.0)),
+        VelloLine::new(DVec2::new(100.0, 100.0), DVec2::new(0.0, -100.0)),
         Fill::new().with_color(Color::WHITE),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
@@ -32,6 +32,7 @@ fn render_shapes(mut commands: Commands) {
         Fill::new().with_color(css::ORANGE.into()),
         Stroke::new(5.0).with_color(css::RED.into()),
         Transform::from_xyz(-100.0, 0.0, 0.0),
+        HeadBundle::new(VelloRect::new(20.0, 20.0)),
     );
 
     // Circle
@@ -40,6 +41,7 @@ fn render_shapes(mut commands: Commands) {
         Fill::new().with_color(css::YELLOW_GREEN.into()),
         Stroke::new(5.0).with_color(css::DARK_GREEN.into()),
         Transform::from_xyz(100.0, 0.0, 0.0),
+        HeadBundle::new(VelloRect::new(20.0, 20.0)),
     );
 
     let mut bez_path = kurbo::BezPath::new();
@@ -50,11 +52,12 @@ fn render_shapes(mut commands: Commands) {
     let bezier_path = (
         VelloBezPath::new().with_path(bez_path),
         Stroke::new(4.0).with_color(css::YELLOW.into()),
+        HeadBundle::new(VelloRect::new(20.0, 20.0)),
     );
 
     commands.spawn(VelloSceneBundle::default()).insert(line);
-    commands.spawn(VelloSceneBundle::default()).insert(rect);
-    commands.spawn(VelloSceneBundle::default()).insert(circle);
+    // commands.spawn(VelloSceneBundle::default()).insert(rect);
+    // commands.spawn(VelloSceneBundle::default()).insert(circle);
     commands
         .spawn(VelloSceneBundle::default())
         .insert(bezier_path);
@@ -65,6 +68,6 @@ fn animation(mut q_heads: Query<&mut Head>, time: Res<Time>) {
 
     for mut head in q_heads.iter_mut() {
         head.time = factor;
-        head.rotation_offset = std::f64::consts::TAU * factor;
+        // head.rotation_offset = std::f64::consts::TAU * factor;
     }
 }
