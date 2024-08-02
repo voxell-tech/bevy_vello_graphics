@@ -63,7 +63,7 @@ pub trait Vector {
     }
     /// The rotation at the tangent of the border at a specific `time` value.
     fn border_rotation(&self, time: f64) -> f64 {
-        // TODO: really should rotate based on a pair of segments like in `border_translation` but its already kinda gross to compute that once so we need like a cache or somethjing
+        // TODO: really should rotate based on a pair of segments like in `border_translation` but its already kinda gross to compute that once so we need like a cache or somethjing (impl in bez path tho)
         self.border_translation(time).to_angle()
     }
 }

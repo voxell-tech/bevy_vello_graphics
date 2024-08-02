@@ -26,4 +26,12 @@ impl Vector for VelloCircle {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::Circle::new(kurbo::Point::default(), self.radius)
     }
+
+    fn border_translation(&self, time: f64) -> DVec2 {
+        DVec2::ZERO.lerp(DVec2::new(0.0, -self.radius), time)
+    }
+
+    fn border_rotation(&self, _time: f64) -> f64 {
+        0.0
+    }
 }

@@ -40,7 +40,7 @@ fn render_shapes(mut commands: Commands) {
         VelloCircle::new(50.0),
         Fill::new().with_color(css::YELLOW_GREEN.into()),
         Stroke::new(5.0).with_color(css::DARK_GREEN.into()),
-        Transform::from_xyz(100.0, 0.0, 0.0),
+        Transform::from_xyz(300.0, 0.0, 0.0),
         HeadBundle::new(VelloRect::new(20.0, 20.0)),
     );
 
@@ -51,8 +51,8 @@ fn render_shapes(mut commands: Commands) {
     bez_path.line_to((100.0, 100.0));
     bez_path.line_to((300.0, 100.0));
     bez_path.line_to((600.0, 100.0));
-    bez_path.line_to((000.0, 300.0));
-    bez_path.line_to((000.0, 600.0));
+    bez_path.line_to((000.0, 250.0));
+    bez_path.line_to((000.0, 400.0));
     // bez_path.curve_to((200.0, 50.0), (400.0, -50.0), (300.0, -100.0));
 
     // Bézier Path
@@ -63,8 +63,8 @@ fn render_shapes(mut commands: Commands) {
     );
 
     commands.spawn(VelloSceneBundle::default()).insert(line);
-    // commands.spawn(VelloSceneBundle::default()).insert(rect);
-    // commands.spawn(VelloSceneBundle::default()).insert(circle);
+    commands.spawn(VelloSceneBundle::default()).insert(rect);
+    commands.spawn(VelloSceneBundle::default()).insert(circle);
     commands
         .spawn(VelloSceneBundle::default())
         .insert(bezier_path);
