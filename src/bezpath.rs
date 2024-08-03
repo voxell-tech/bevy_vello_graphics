@@ -30,6 +30,15 @@ impl VelloBezPath {
         self.trace = trace;
         self
     }
+
+    /// Gets the progress of/and [`kurbo::PathEl`] which the [`VelloBezPath`] is inbetween at `t`
+    fn inbetween(&self, t: f64) -> (&[PathEl], f64) {
+        let elements = self.path.elements();
+        let index_f = (t * elements.len() as f64 - 1.0).max(0.0);
+        let index = index_f as usize;
+
+        (&elements[index..=index - (t == 1.0) as usize + 1], index_f % 1.0)
+    }
 }
 
 impl Default for VelloBezPath {
@@ -104,25 +113,22 @@ impl Vector for VelloBezPath {
     }
 
     fn border_translation(&self, time: f64) -> DVec2 {
-        let elements = self.path.elements();
-        let index_f = (time * elements.len() as f64).max(1.0) - 1.0;
-        let index = index_f as usize;
-        let path = &elements[index..=index - (time == 1.0) as usize + 1];
+        let (path, t) = self.inbetween(time);
 
-        // TODO: could use reflection or meta stuff here but match works for now
-        let current = path[0].end_point().unwrap_or_default().to_vec2();
-        let next = path[path.len() - 1];
-        let next = match next {
-            PathEl::LineTo(p) => p,
-            PathEl::CurveTo(_a, _b, _c) => todo!(), // should be implemented upstream kurbo
-            PathEl::QuadTo(_a, _b) => todo!(),      // should be implemented upstream kurbo
-            _ => unreachable!(),
-        }
-        .to_vec2();
+        let current = path[0].end_point().unwrap_or_default();
+        let point = interp_pathel(current, path[path.len() - 1], t as f32).end_point().unwrap().to_vec2();
 
-        // TODO: maybe should take the seg length into account so its a constant interp speed
-        // also what is going on with initial time???? it in first segment for some reason
-        DVec2::new(current.x, current.y).lerp(DVec2::new(next.x, next.y), index_f % 1.0)
+        DVec2::new(point.x, point.y)
+    }
+
+    fn border_rotation(&self, time: f64) -> f64 {
+        let (path, t) = self.inbetween(time);
+
+        let current = path[0].end_point().unwrap_or_default();
+        let point = interp_pathel(current, path[path.len() - 1], t as f32).end_point().unwrap().to_vec2();
+        let current = current.to_vec2();
+
+        DVec2::normalize_or_zero(DVec2::new(point.x, point.y) - DVec2::new(current.x, current.y)).to_angle()
     }
 }
 
