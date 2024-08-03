@@ -37,7 +37,10 @@ impl VelloBezPath {
         let index_f = (t * elements.len() as f64 - 1.0).max(0.0);
         let index = index_f as usize;
 
-        (&elements[index..=index - (t == 1.0) as usize + 1], index_f % 1.0)
+        (
+            &elements[index..=index - (t == 1.0) as usize + 1],
+            index_f % 1.0,
+        )
     }
 }
 
@@ -116,7 +119,10 @@ impl Vector for VelloBezPath {
         let (path, t) = self.inbetween(time);
 
         let current = path[0].end_point().unwrap_or_default();
-        let point = interp_pathel(current, path[path.len() - 1], t as f32).end_point().unwrap().to_vec2();
+        let point = interp_pathel(current, path[path.len() - 1], t as f32)
+            .end_point()
+            .unwrap()
+            .to_vec2();
 
         DVec2::new(point.x, point.y)
     }
@@ -125,10 +131,14 @@ impl Vector for VelloBezPath {
         let (path, t) = self.inbetween(time);
 
         let current = path[0].end_point().unwrap_or_default();
-        let point = interp_pathel(current, path[path.len() - 1], t as f32).end_point().unwrap().to_vec2();
+        let point = interp_pathel(current, path[path.len() - 1], t as f32)
+            .end_point()
+            .unwrap()
+            .to_vec2();
         let current = current.to_vec2();
 
-        DVec2::normalize_or_zero(DVec2::new(point.x, point.y) - DVec2::new(current.x, current.y)).to_angle()
+        DVec2::normalize_or_zero(DVec2::new(point.x, point.y) - DVec2::new(current.x, current.y))
+            .to_angle()
     }
 }
 
