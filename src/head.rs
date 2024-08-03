@@ -1,7 +1,7 @@
 //! Drawing [`HeadVector`] on the border of [`Vector`] shapes.
 
 use bevy_ecs::prelude::*;
-use bevy_math::DVec2;
+use bevy_math::{DVec2, FloatExt};
 use bevy_vello::vello::{self, kurbo};
 
 use crate::{Fill, SceneHolder, Stroke, Vector};
@@ -12,8 +12,8 @@ pub(super) fn prepare_heads<V: Vector + Component>(
     mut q_vectors: Query<(&V, &Head, &mut HeadTransform), Or<(Changed<V>, Changed<Head>)>>,
 ) {
     for (vector, head, mut head_transform) in q_vectors.iter_mut() {
-        let translation = vector.border_translation(head.time) + head.translation_offset;
-        let rotation = vector.border_rotation(head.time) + head.rotation_offset;
+        let translation = vector.border_translation(head.time) + DVec2::ZERO.lerp(head.translation_offset, head.time);
+        let rotation = vector.border_rotation(head.time) + 0.0_f64.lerp(head.rotation_offset, head.time);
         let scale = head.scale;
 
         head_transform.0 = kurbo::Affine::rotate(rotation)

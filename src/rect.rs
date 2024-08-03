@@ -53,11 +53,8 @@ impl Vector for VelloRect {
         )
     }
 
-    fn border_translation(&self, time: f64) -> DVec2 {
-        DVec2::new(self.anchor.x, 0.0).lerp(
-            DVec2::new(self.anchor.x, -self.size.y * self.anchor.y),
-            time,
-        )
+    fn border_translation(&self, _time: f64) -> DVec2 {
+        DVec2::ZERO
     }
 
     fn border_rotation(&self, _time: f64) -> f64 {
