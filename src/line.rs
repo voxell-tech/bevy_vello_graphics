@@ -49,6 +49,6 @@ impl Vector for VelloLine {
     }
 
     fn border_rotation(&self, _time: f64) -> f64 {
-        DVec2::normalize_or_zero(self.p1 - self.p0).to_angle()
+        (self.p1 - self.p0).to_angle()
     }
 }

@@ -33,6 +33,7 @@ impl VelloBezPath {
 
     // TODO: need a constant interpolation time `t` thats even accross all `PathEl`s
     /// Gets the progress of/and [`kurbo::PathEl`] which the [`VelloBezPath`] is inbetween at `t`
+    /// NOTE: the return path may only have one element if t = 1.
     fn inbetween(&self, t: f64) -> (&[PathEl], f64) {
         let elements = self.path.elements();
         let index_f = t * (elements.len() - 1) as f64;
@@ -132,14 +133,15 @@ impl Vector for VelloBezPath {
         let (path, t) = self.inbetween(time);
 
         let current = path[0].end_point().unwrap_or_default();
-        let point = interp_pathel(current, path[path.len() - 1], t as f32)
+        let before = interp_pathel(current, path[path.len() - 1], t as f32 - 1e-4)
+            .end_point()
+            .unwrap();
+        let next = interp_pathel(current, path[path.len() - 1], t as f32)
             .end_point()
             .unwrap()
             .to_vec2();
-        let current = current.to_vec2();
 
-        DVec2::normalize_or_zero(DVec2::new(point.x, point.y) - DVec2::new(current.x, current.y))
-            .to_angle()
+        (next - before.to_vec2()).angle()
     }
 }
 
