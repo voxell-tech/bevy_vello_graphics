@@ -33,14 +33,13 @@ impl VelloBezPath {
 
     // TODO: need a constant interpolation time `t` thats even accross all `PathEl`s
     /// Gets the progress of/and [`kurbo::PathEl`] which the [`VelloBezPath`] is inbetween at `t`
-    /// NOTE: the return path may only have one element if t = 1.
-    fn inbetween(&self, t: f64) -> (&[PathEl], f64) {
+    fn inbetween(&self, t: f64) -> ((PathEl, PathEl), f64) {
         let elements = self.path.elements();
         let index_f = t * (elements.len() - 1) as f64;
         let index = index_f as usize;
 
         (
-            &elements[index..=index + 1 - (t == 1.0) as usize],
+            (elements[index], elements[index + 1 - (t == 1.0) as usize]),
             index_f % 1.0,
         )
     }
@@ -120,8 +119,8 @@ impl Vector for VelloBezPath {
     fn border_translation(&self, time: f64) -> DVec2 {
         let (path, t) = self.inbetween(time);
 
-        let current = path[0].end_point().unwrap_or_default();
-        let point = interp_pathel(current, path[path.len() - 1], t as f32)
+        let current = path.0.end_point().unwrap_or_default();
+        let point = interp_pathel(current, path.1, t as f32)
             .end_point()
             .unwrap()
             .to_vec2();
@@ -132,11 +131,11 @@ impl Vector for VelloBezPath {
     fn border_rotation(&self, time: f64) -> f64 {
         let (path, t) = self.inbetween(time);
 
-        let current = path[0].end_point().unwrap_or_default();
-        let before = interp_pathel(current, path[path.len() - 1], t as f32 - 1e-4)
+        let current = path.0.end_point().unwrap_or_default();
+        let before = interp_pathel(current, path.1, t as f32 - 1e-4)
             .end_point()
             .unwrap();
-        let next = interp_pathel(current, path[path.len() - 1], t as f32)
+        let next = interp_pathel(current, path.1, t as f32)
             .end_point()
             .unwrap()
             .to_vec2();
