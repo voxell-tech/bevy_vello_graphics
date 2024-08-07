@@ -143,7 +143,7 @@ impl Vector for VelloBezPath {
                 let a = current.lerp(p1, t);
                 let b = p1.lerp(p2, t);
                 (b.y - a.y).atan2(b.x - a.x)
-            },
+            }
             PathEl::CurveTo(p1, p2, p3) => {
                 let a = current.lerp(p1, t);
                 let b = p1.lerp(p2, t);
@@ -152,7 +152,7 @@ impl Vector for VelloBezPath {
                 let d = a.lerp(b, t);
                 let e = b.lerp(c, t);
                 (d.y - e.y).atan2(d.x - e.x)
-            },
+            }
             _ => {
                 // cant do f64::EPSILON cause of precision issues
                 let before = interp_pathel(current, path.1, t - f32::EPSILON as f64)
