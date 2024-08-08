@@ -68,7 +68,7 @@ impl Vector for VelloRect {
     }
 
     fn border_translation(&self, time: f64) -> DVec2 {
-        let t = time * 4.;
+        let t = time * 4.0;
         let time = t.ceil() as u64;
         let t = t % 1.0;
 
@@ -84,6 +84,17 @@ impl Vector for VelloRect {
     }
 
     fn border_rotation(&self, time: f64) -> f64 {
-        self.border_translation(time).to_angle()
+        let diff =
+            self.border_translation(time) - self.border_translation((4.0 * time).floor() / 4.0);
+
+        if diff.y > 0.0 {
+            0.0
+        } else if diff.y < 0.0 {
+            std::f64::consts::PI
+        } else if diff.x > 0.0 {
+            std::f64::consts::FRAC_PI_2
+        } else {
+            3.0 * std::f64::consts::FRAC_2_PI
+        }
     }
 }
