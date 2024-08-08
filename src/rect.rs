@@ -85,16 +85,16 @@ impl Vector for VelloRect {
 
     fn border_rotation(&self, time: f64) -> f64 {
         let diff =
-            self.border_translation(time) - self.border_translation((4.0 * time).floor() / 4.0);
+            self.border_translation(time).abs() - self.border_translation((4.0 * time).floor() / 4.0);
 
         if diff.y > 0.0 {
-            0.0
-        } else if diff.y < 0.0 {
-            std::f64::consts::PI
-        } else if diff.x > 0.0 {
             std::f64::consts::FRAC_PI_2
+        } else if diff.y < 0.0 {
+            3.0 * std::f64::consts::FRAC_PI_2
+        } else if diff.x < 0.0 {
+            std::f64::consts::PI
         } else {
-            3.0 * std::f64::consts::FRAC_2_PI
+            0.0
         }
     }
 }

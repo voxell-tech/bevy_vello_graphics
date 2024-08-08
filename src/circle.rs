@@ -33,6 +33,6 @@ impl Vector for VelloCircle {
     }
 
     fn border_rotation(&self, time: f64) -> f64 {
-        self.border_translation(time).to_angle()
+        time * -std::f64::consts::TAU
     }
 }

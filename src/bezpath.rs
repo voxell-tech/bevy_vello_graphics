@@ -126,7 +126,10 @@ impl Vector for VelloBezPath {
         let current = path.0.end_point().unwrap_or_default();
         let point = interp_pathel(current, path.1, t)
             .end_point()
-            .unwrap()
+            .unwrap_or(current.lerp(
+                self.path.elements().first().unwrap().end_point().unwrap(),
+                t,
+            ))
             .to_vec2();
 
         DVec2::new(point.x, point.y)
@@ -138,7 +141,16 @@ impl Vector for VelloBezPath {
         let current = path.0.end_point().unwrap_or_default();
         match path.1 {
             PathEl::MoveTo(_) => unreachable!(),
-            PathEl::ClosePath => unreachable!(),
+            PathEl::ClosePath => (self
+                .path
+                .elements()
+                .first()
+                .unwrap()
+                .end_point()
+                .unwrap()
+                .to_vec2()
+                - current.to_vec2())
+            .angle(),
             PathEl::LineTo(p) => (p.to_vec2() - current.to_vec2()).angle(),
             PathEl::QuadTo(p1, p2) => {
                 let a = current.lerp(p1, t);
@@ -152,7 +164,7 @@ impl Vector for VelloBezPath {
 
                 let d = a.lerp(b, t);
                 let e = b.lerp(c, t);
-                (d.y - e.y).atan2(d.x - e.x)
+                (e.y - d.y).atan2(e.x - d.x)
             }
             _ => {
                 // cant do f64::EPSILON cause of precision issues
