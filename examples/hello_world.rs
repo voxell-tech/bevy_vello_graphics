@@ -41,11 +41,12 @@ fn render_shapes(mut commands: Commands) {
         Fill::new().with_color(css::YELLOW_GREEN.into()),
         Stroke::new(5.0).with_color(css::DARK_GREEN.into()),
         Transform::from_xyz(100.0, 0.0, 0.0),
-        HeadBundle {
-            vector: HeadVector(VelloRect::new(20.0, 20.0)),
-            head: Head::default().with_offset(DVec2::new(0.0, -50.0)),
-            transform: HeadTransform::default(),
-        },
+        HeadBundle::new(VelloRect::new(20.0, 20.0)),
+        // HeadBundle {
+        //     vector: HeadVector(VelloRect::new(20.0, 20.0)),
+        //     head: Head::default().with_offset(DVec2::new(0.0, -50.0)),
+        //     transform: HeadTransform::default(),
+        // },
     );
 
     let mut bez_path = kurbo::BezPath::new();

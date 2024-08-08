@@ -36,6 +36,7 @@ impl VelloBezPath {
 
     // TODO: need a constant interpolation time `t` thats even accross all `PathEl`s
     /// Gets the progress of/and [`kurbo::PathEl`] which the [`VelloBezPath`] is inbetween at `t`
+    /// NOTE: each [`kurbo::PathEl`] will be the same at `t == 1.0`
     fn inbetween(&self, t: f64) -> ((PathEl, PathEl), f64) {
         let elements = self.path.elements();
         let index_f = t * (elements.len() - 1) as f64;

@@ -27,11 +27,12 @@ impl Vector for VelloCircle {
         kurbo::Circle::new(kurbo::Point::default(), self.radius)
     }
 
-    fn border_translation(&self, _time: f64) -> DVec2 {
-        DVec2::ZERO
+    fn border_translation(&self, time: f64) -> DVec2 {
+        let theta = time * std::f64::consts::TAU;
+        DVec2::new(f64::sin(theta), f64::cos(theta)) * self.radius
     }
 
-    fn border_rotation(&self, _time: f64) -> f64 {
-        0.0
+    fn border_rotation(&self, time: f64) -> f64 {
+        self.border_translation(time).to_angle()
     }
 }
