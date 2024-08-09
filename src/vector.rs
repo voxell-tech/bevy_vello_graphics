@@ -53,9 +53,10 @@ pub struct VectorScene;
 pub trait Vector {
     /// Returns vector graphics that implements [`kurbo::Shape`].
     fn shape(&self) -> impl kurbo::Shape;
+
     /// Translation of the border at a specific `time` value.
     fn border_translation(&self, time: f64) -> DVec2 {
-        let path = BezPath::from_iter(self.shape().path_elements(0.0));
+        let path = BezPath::from_iter(self.shape().path_elements(0.1));
 
         VelloBezPath::default()
             .with_path(path)
@@ -64,7 +65,7 @@ pub trait Vector {
 
     /// The rotation at the tangent of the border at a specific `time` value.
     fn border_rotation(&self, time: f64) -> f64 {
-        let path = BezPath::from_iter(self.shape().path_elements(0.0));
+        let path = BezPath::from_iter(self.shape().path_elements(0.1));
 
         VelloBezPath::default()
             .with_path(path)

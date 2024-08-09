@@ -20,7 +20,7 @@ fn render_shapes(mut commands: Commands) {
     let mut triangle_path = kurbo::BezPath::new();
     triangle_path.move_to(kurbo::Point::new(0.0, -10.0));
     triangle_path.line_to(kurbo::Point::new(0.0, 10.0));
-    triangle_path.line_to(kurbo::Point::new(20.0, 0.0));
+    triangle_path.line_to(kurbo::Point::new(25.0, 0.0));
     triangle_path.close_path();
 
     let triangle = VelloBezPath::new().with_path(triangle_path);
@@ -55,7 +55,6 @@ fn render_shapes(mut commands: Commands) {
     let mut bez_path = kurbo::BezPath::new();
     bez_path.move_to((300.0, 100.0));
     bez_path.curve_to((200.0, 50.0), (400.0, -50.0), (300.0, -100.0));
-    bez_path.close_path();
 
     // Bézier Path
     let bezier_path = (
@@ -73,7 +72,9 @@ fn render_shapes(mut commands: Commands) {
 }
 
 fn animation(mut q_heads: Query<&mut Head>, time: Res<Time>) {
-    let factor = time.elapsed_seconds_f64().sin() * 0.5 + 0.5;
+    // Overshoots for stability check
+    let mut factor = time.elapsed_seconds_f64() * 0.5;
+    factor = factor.sin().remap(-1.0, 1.0, -0.2, 1.2);
 
     for mut head in q_heads.iter_mut() {
         head.time = factor;

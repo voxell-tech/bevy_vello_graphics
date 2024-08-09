@@ -67,33 +67,42 @@ impl Vector for VelloRect {
         kurbo::RoundedRect::new(self.x0(), self.y0(), self.x1(), self.y1(), self.radius)
     }
 
-    fn border_translation(&self, time: f64) -> DVec2 {
-        let t = time * 4.0;
-        let time = t.ceil() as u64;
-        let t = t % 1.0;
-
-        if time > 3 {
-            DVec2::new(self.x0(), self.y0().lerp(self.y1(), t))
-        } else if time > 2 {
-            DVec2::new(self.x1().lerp(self.x0(), t), self.y0())
-        } else if time > 1 {
-            DVec2::new(self.x1(), self.y1().lerp(self.y0(), t))
+    fn border_translation(&self, mut time: f64) -> DVec2 {
+        // Loop around the rect
+        if time > 0.0 {
+            time %= 1.0;
         } else {
-            DVec2::new(self.x0().lerp(self.x1(), t), self.y1())
+            time = 1.0 - (time.abs() % 1.0);
+        }
+
+        let scaled_time = time * 4.0;
+        let time_int = scaled_time as u64;
+        let t = scaled_time % 1.0;
+
+        match time_int {
+            0 => DVec2::new(f64::lerp(self.x0(), self.x1(), t), self.y1()),
+            1 => DVec2::new(self.x1(), f64::lerp(self.y1(), self.y0(), t)),
+            2 => DVec2::new(f64::lerp(self.x1(), self.x0(), t), self.y0()),
+            3.. => DVec2::new(self.x0(), self.y0().lerp(self.y1(), t)),
         }
     }
 
-    fn border_rotation(&self, time: f64) -> f64 {
-        let time = (time * 4.0).ceil() as u64;
-
-        if time > 3 {
-            std::f64::consts::FRAC_PI_2
-        } else if time > 2 {
-            std::f64::consts::PI
-        } else if time > 1 {
-            3.0 * std::f64::consts::FRAC_PI_2
+    fn border_rotation(&self, mut time: f64) -> f64 {
+        // Loop around the rect
+        if time > 0.0 {
+            time %= 1.0;
         } else {
-            0.0
+            time = 1.0 - (time.abs() % 1.0);
+        }
+
+        let scaled_time = time * 4.0;
+        let time_int = scaled_time as u64;
+
+        match time_int {
+            0 => 0.0,
+            1 => 3.0 * std::f64::consts::FRAC_PI_2,
+            2 => std::f64::consts::PI,
+            3.. => std::f64::consts::FRAC_PI_2,
         }
     }
 }
