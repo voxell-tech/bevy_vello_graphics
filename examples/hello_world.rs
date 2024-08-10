@@ -53,13 +53,15 @@ fn render_shapes(mut commands: Commands) {
     );
 
     let mut bez_path = kurbo::BezPath::new();
-    bez_path.move_to((300.0, 100.0));
-    bez_path.curve_to((200.0, 50.0), (400.0, -50.0), (300.0, -100.0));
+    bez_path.move_to((0.0, 100.0));
+    bez_path.curve_to((-100.0, 50.0), (100.0, -50.0), (0.0, -100.0));
+    bez_path.close_path();
 
     // Bézier Path
     let bezier_path = (
         VelloBezPath::new().with_path(bez_path),
         Stroke::new(4.0).with_color(css::YELLOW.into()),
+        Transform::from_xyz(300.0, 0.0, 0.0),
         HeadBundle::new(triangle),
     );
 

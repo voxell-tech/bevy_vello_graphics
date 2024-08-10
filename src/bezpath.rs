@@ -3,10 +3,7 @@
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
 use bevy_utils::prelude::*;
-use bevy_vello::{
-    prelude::*,
-    vello::kurbo::{PathEl, Point},
-};
+use bevy_vello::vello::kurbo;
 
 use super::Vector;
 
@@ -32,20 +29,6 @@ impl VelloBezPath {
     pub fn with_trace(mut self, trace: f64) -> Self {
         self.trace = trace;
         self
-    }
-
-    // TODO: need a constant interpolation time `t` thats even accross all `PathEl`s
-    /// Gets the progress of/and [`kurbo::PathEl`] which the [`VelloBezPath`] is inbetween at `t`
-    /// NOTE: each [`kurbo::PathEl`] will be the same at `t == 1.0`
-    fn inbetween(&self, t: f64) -> ((PathEl, PathEl), f64) {
-        let elements = self.path.elements();
-        let index_f = t.clamp(0.0, 1.0) * (elements.len() - 1) as f64;
-        let index = index_f as usize;
-
-        (
-            (elements[index], elements[index + 1 - (t == 1.0) as usize]),
-            index_f % 1.0,
-        )
     }
 }
 
@@ -79,7 +62,7 @@ impl Vector for VelloBezPath {
 
                 match pathel {
                     kurbo::PathEl::MoveTo(p) => {
-                        path.push(PathEl::MoveTo(*p));
+                        path.push(kurbo::PathEl::MoveTo(*p));
 
                         most_recent_initial = *p;
                         most_recent_point = *p;
@@ -133,18 +116,18 @@ impl Vector for VelloBezPath {
 
         let seg_count = pathel_count - 1;
         let trace_raw = time * seg_count as f64;
-        let trace_index = f64::clamp(trace_raw, 0.0, (seg_count - 1) as f64) as usize;
+        let trace_index = i64::clamp(trace_raw as i64, 0, seg_count as i64 - 1) as usize;
         let seg_index = trace_index + 1;
 
         if let Some(segment) = self.path.get_seg(seg_index) {
             let t = trace_raw - trace_index as f64;
             return match segment {
-                kurbo::PathSeg::Line(line) => point_to_vec(Point::lerp(line.p0, line.p1, t)),
-                kurbo::PathSeg::Quad(quad) => {
-                    point_to_vec(lerp_quad_point(quad.p0, quad.p1, quad.p2, t))
+                kurbo::PathSeg::Line(line) => point_to_vec(kurbo::Point::lerp(line.p0, line.p1, t)),
+                kurbo::PathSeg::Quad(kurbo::QuadBez { p0, p1, p2 }) => {
+                    point_to_vec(lerp_quad_point(p0, p1, p2, t))
                 }
-                kurbo::PathSeg::Cubic(cubic) => {
-                    point_to_vec(lerp_cubic_point(cubic.p0, cubic.p1, cubic.p2, cubic.p3, t))
+                kurbo::PathSeg::Cubic(kurbo::CubicBez { p0, p1, p2, p3 }) => {
+                    point_to_vec(lerp_cubic_point(p0, p1, p2, p3, t))
                 }
             };
         }
@@ -154,108 +137,134 @@ impl Vector for VelloBezPath {
     }
 
     fn border_rotation(&self, time: f64) -> f64 {
-        return 0.0;
-        let (path, t) = self.inbetween(time);
+        let pathels = self.path.elements();
+        let pathel_count = pathels.len();
 
-        let current = path.0.end_point().unwrap_or_default();
-        match path.1 {
-            PathEl::MoveTo(_) => unreachable!(),
-            PathEl::ClosePath => (self
-                .path
-                .elements()
-                .first()
-                .unwrap()
-                .end_point()
-                .unwrap()
-                .to_vec2()
-                - current.to_vec2())
-            .angle(),
-            PathEl::LineTo(p) => (p.to_vec2() - current.to_vec2()).angle(),
-            PathEl::QuadTo(p1, p2) => {
-                let a = current.lerp(p1, t);
-                let b = p1.lerp(p2, t);
-                (b.y - a.y).atan2(b.x - a.x)
-            }
-            PathEl::CurveTo(p1, p2, p3) => {
-                let a = current.lerp(p1, t);
-                let b = p1.lerp(p2, t);
-                let c = p2.lerp(p3, t);
+        let fallback = 0.0;
 
-                let d = a.lerp(b, t);
-                let e = b.lerp(c, t);
-                (e.y - d.y).atan2(e.x - d.x)
-            }
+        // Guarantee to have at least 2 path elements
+        if pathel_count < 2 {
+            return fallback;
         }
+
+        let seg_count = pathel_count - 1;
+        let trace_raw = time * seg_count as f64;
+        let trace_index = i64::clamp(trace_raw as i64, 0, seg_count as i64 - 1) as usize;
+        let seg_index = trace_index + 1;
+
+        if let Some(segment) = self.path.get_seg(seg_index) {
+            let t = trace_raw - trace_index as f64;
+            return match segment {
+                kurbo::PathSeg::Line(line) => (line.p1 - line.p0).angle(),
+                kurbo::PathSeg::Quad(kurbo::QuadBez { p0, p1, p2 }) => {
+                    // kurbo::Point between p0 and p1
+                    let x0 = kurbo::Point::lerp(p0, p1, t);
+                    // kurbo::Point between p1 and p2
+                    let x1 = kurbo::Point::lerp(p1, p2, t);
+                    (x1.y - x0.y).atan2(x1.x - x0.x)
+                }
+                kurbo::PathSeg::Cubic(kurbo::CubicBez { p0, p1, p2, p3 }) => {
+                    // point_to_vec(lerp_cubic_point(cubic.p0, cubic.p1, cubic.p2, cubic.p3, t))
+                    // kurbo::Point between p0 and p1
+                    let x0 = kurbo::Point::lerp(p0, p1, t);
+                    // kurbo::Point between p1 and p2
+                    let x1 = kurbo::Point::lerp(p1, p2, t);
+                    // kurbo::Point between p2 and p3
+                    let x2 = kurbo::Point::lerp(p2, p3, t);
+                    // kurbo::Point between x0 and x1
+                    let y0 = kurbo::Point::lerp(x0, x1, t);
+                    // kurbo::Point between x1 and x2
+                    let y1 = kurbo::Point::lerp(x1, x2, t);
+
+                    (y1.y - y0.y).atan2(y1.x - y0.x)
+                }
+            };
+        }
+
+        // All else fails..
+        fallback
     }
 }
 
 /// Interpolate [`kurbo::PathEl`].
-fn interp_pathel(p0: Point, pathel: PathEl, t: f64) -> PathEl {
+fn interp_pathel(p0: kurbo::Point, pathel: kurbo::PathEl, t: f64) -> kurbo::PathEl {
     if t == 1.0 {
         return pathel;
     }
 
     match pathel {
-        PathEl::MoveTo(p1) => PathEl::MoveTo(Point::lerp(p0, p1, t)),
-        PathEl::LineTo(p1) => PathEl::LineTo(Point::lerp(p0, p1, t)),
-        PathEl::QuadTo(p1, p2) => lerp_quad_pathel(p0, p1, p2, t),
-        PathEl::CurveTo(p1, p2, p3) => lerp_cubic_pathel(p0, p1, p2, p3, t),
-        PathEl::ClosePath => PathEl::ClosePath,
+        kurbo::PathEl::MoveTo(p1) => kurbo::PathEl::MoveTo(kurbo::Point::lerp(p0, p1, t)),
+        kurbo::PathEl::LineTo(p1) => kurbo::PathEl::LineTo(kurbo::Point::lerp(p0, p1, t)),
+        kurbo::PathEl::QuadTo(p1, p2) => lerp_quad_pathel(p0, p1, p2, t),
+        kurbo::PathEl::CurveTo(p1, p2, p3) => lerp_cubic_pathel(p0, p1, p2, p3, t),
+        kurbo::PathEl::ClosePath => kurbo::PathEl::ClosePath,
     }
 }
 
-fn lerp_quad_pathel(p0: Point, p1: Point, p2: Point, t: f64) -> PathEl {
-    // Point between p0 and p1
-    let x0 = Point::lerp(p0, p1, t);
-    // Point between p1 and p2
-    let x1 = Point::lerp(p1, p2, t);
-    // Point on curve
-    let end_p = Point::lerp(x0, x1, t);
+fn lerp_quad_pathel(p0: kurbo::Point, p1: kurbo::Point, p2: kurbo::Point, t: f64) -> kurbo::PathEl {
+    // kurbo::Point between p0 and p1
+    let x0 = kurbo::Point::lerp(p0, p1, t);
+    // kurbo::Point between p1 and p2
+    let x1 = kurbo::Point::lerp(p1, p2, t);
+    // kurbo::Point on curve
+    let end_p = kurbo::Point::lerp(x0, x1, t);
 
-    PathEl::QuadTo(x0, end_p)
+    kurbo::PathEl::QuadTo(x0, end_p)
 }
 
-fn lerp_quad_point(p0: Point, p1: Point, p2: Point, t: f64) -> Point {
-    // Point between p0 and p1
-    let x0 = Point::lerp(p0, p1, t);
-    // Point between p1 and p2
-    let x1 = Point::lerp(p1, p2, t);
-    // Point on curve
-    Point::lerp(x0, x1, t)
+fn lerp_quad_point(p0: kurbo::Point, p1: kurbo::Point, p2: kurbo::Point, t: f64) -> kurbo::Point {
+    // kurbo::Point between p0 and p1
+    let x0 = kurbo::Point::lerp(p0, p1, t);
+    // kurbo::Point between p1 and p2
+    let x1 = kurbo::Point::lerp(p1, p2, t);
+    // kurbo::Point on curve
+    kurbo::Point::lerp(x0, x1, t)
 }
 
-fn lerp_cubic_pathel(p0: Point, p1: Point, p2: Point, p3: Point, t: f64) -> PathEl {
-    // Point between p0 and p1
-    let x0 = Point::lerp(p0, p1, t);
-    // Point between p1 and p2
-    let x1 = Point::lerp(p1, p2, t);
-    // Point between p2 and p3
-    let x2 = Point::lerp(p2, p3, t);
-    // Point between x0 and x1
-    let y0 = Point::lerp(x0, x1, t);
-    // Point between x1 and x2
-    let y1 = Point::lerp(x1, x2, t);
-    // Point on curve
-    let end_p = Point::lerp(y0, y1, t);
+fn lerp_cubic_pathel(
+    p0: kurbo::Point,
+    p1: kurbo::Point,
+    p2: kurbo::Point,
+    p3: kurbo::Point,
+    t: f64,
+) -> kurbo::PathEl {
+    // kurbo::Point between p0 and p1
+    let x0 = kurbo::Point::lerp(p0, p1, t);
+    // kurbo::Point between p1 and p2
+    let x1 = kurbo::Point::lerp(p1, p2, t);
+    // kurbo::Point between p2 and p3
+    let x2 = kurbo::Point::lerp(p2, p3, t);
+    // kurbo::Point between x0 and x1
+    let y0 = kurbo::Point::lerp(x0, x1, t);
+    // kurbo::Point between x1 and x2
+    let y1 = kurbo::Point::lerp(x1, x2, t);
+    // kurbo::Point on curve
+    let end_p = kurbo::Point::lerp(y0, y1, t);
 
-    PathEl::CurveTo(x0, y0, end_p)
+    kurbo::PathEl::CurveTo(x0, y0, end_p)
 }
 
-fn lerp_cubic_point(p0: Point, p1: Point, p2: Point, p3: Point, t: f64) -> Point {
-    // Point between p0 and p1
-    let x0 = Point::lerp(p0, p1, t);
-    // Point between p1 and p2
-    let x1 = Point::lerp(p1, p2, t);
-    // Point between p2 and p3
-    let x2 = Point::lerp(p2, p3, t);
-    // Point between x0 and x1
-    let y0 = Point::lerp(x0, x1, t);
-    // Point between x1 and x2
-    let y1 = Point::lerp(x1, x2, t);
-    // Point on curve
-    Point::lerp(y0, y1, t)
+fn lerp_cubic_point(
+    p0: kurbo::Point,
+    p1: kurbo::Point,
+    p2: kurbo::Point,
+    p3: kurbo::Point,
+    t: f64,
+) -> kurbo::Point {
+    // kurbo::Point between p0 and p1
+    let x0 = kurbo::Point::lerp(p0, p1, t);
+    // kurbo::Point between p1 and p2
+    let x1 = kurbo::Point::lerp(p1, p2, t);
+    // kurbo::Point between p2 and p3
+    let x2 = kurbo::Point::lerp(p2, p3, t);
+    // kurbo::Point between x0 and x1
+    let y0 = kurbo::Point::lerp(x0, x1, t);
+    // kurbo::Point between x1 and x2
+    let y1 = kurbo::Point::lerp(x1, x2, t);
+    // kurbo::Point on curve
+    kurbo::Point::lerp(y0, y1, t)
 }
 
-fn point_to_vec(point: Point) -> DVec2 {
+fn point_to_vec(point: kurbo::Point) -> DVec2 {
     DVec2::new(point.x, point.y)
 }
