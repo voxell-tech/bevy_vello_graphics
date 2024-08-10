@@ -2,12 +2,9 @@
 
 use bevy_ecs::prelude::*;
 use bevy_math::DVec2;
-use bevy_vello::vello::{
-    self,
-    kurbo::{self, BezPath, Shape},
-};
+use bevy_vello::vello::{self, kurbo};
 
-use crate::{Fill, SceneHolder, Stroke, VelloBezPath};
+use crate::{Fill, SceneHolder, Stroke};
 
 /// Draw [`Vector`] shapes.
 #[allow(clippy::type_complexity)]
@@ -55,20 +52,12 @@ pub trait Vector {
     fn shape(&self) -> impl kurbo::Shape;
 
     /// Translation of the border at a specific `time` value.
-    fn border_translation(&self, time: f64) -> DVec2 {
-        let path = BezPath::from_iter(self.shape().path_elements(0.1));
-
-        VelloBezPath::default()
-            .with_path(path)
-            .border_translation(time)
+    fn border_translation(&self, _time: f64) -> DVec2 {
+        DVec2::ZERO
     }
 
     /// The rotation at the tangent of the border at a specific `time` value.
-    fn border_rotation(&self, time: f64) -> f64 {
-        let path = BezPath::from_iter(self.shape().path_elements(0.1));
-
-        VelloBezPath::default()
-            .with_path(path)
-            .border_rotation(time)
+    fn border_rotation(&self, _time: f64) -> f64 {
+        0.0
     }
 }
