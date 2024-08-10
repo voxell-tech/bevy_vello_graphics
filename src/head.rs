@@ -31,8 +31,8 @@ pub(super) fn draw_heads<V: Vector + Component>(
             Entity,
             &HeadVector<V>,
             &HeadTransform,
-            Option<&Fill>,
-            Option<&Stroke>,
+            Option<&HeadFill>,
+            Option<&HeadStroke>,
         ),
         Or<(
             Changed<HeadVector<V>>,
@@ -47,20 +47,20 @@ pub(super) fn draw_heads<V: Vector + Component>(
 
         if let Some(fill) = fill {
             scene.fill(
-                fill.style,
+                fill.0.style,
                 head_transform.0,
-                &fill.brush.value,
-                Some(fill.brush.transform),
+                &fill.0.brush.value,
+                Some(fill.0.brush.transform),
                 &head_vector.0.shape(),
             );
         }
 
         if let Some(stroke) = stroke {
             scene.stroke(
-                &stroke.style,
+                &stroke.0.style,
                 head_transform.0,
-                &stroke.brush.value,
-                Some(stroke.brush.transform),
+                &stroke.0.brush.value,
+                Some(stroke.0.brush.transform),
                 &head_vector.0.shape(),
             );
         }
@@ -101,6 +101,14 @@ where
 /// Vector defining the shape of the head.
 #[derive(Component, Debug, Clone, Copy)]
 pub struct HeadVector<V: Vector>(pub V);
+
+/// Fill of a [`HeadVector`].
+#[derive(Component, Clone)]
+pub struct HeadFill(pub Fill);
+
+/// Stroke of a [`HeadVector`].
+#[derive(Component, Default, Clone)]
+pub struct HeadStroke(pub Stroke);
 
 /// Positioning configurations of a head.
 #[derive(Component, Debug, Clone, Copy)]

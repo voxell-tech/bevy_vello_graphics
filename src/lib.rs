@@ -31,7 +31,7 @@ pub mod prelude {
         brush::Brush,
         circle::VelloCircle,
         fill::Fill,
-        head::{Head, HeadBundle, HeadTransform, HeadVector},
+        head::{Head, HeadBundle, HeadFill, HeadStroke, HeadTransform, HeadVector},
         line::VelloLine,
         rect::VelloRect,
         stroke::Stroke,

@@ -7,6 +7,9 @@ use bevy_vello::prelude::*;
 
 use crate::brush::Brush;
 
+/// Fill of a [`Vector`][Vector].
+///
+/// [Vector]: crate::Vector
 #[derive(Component, Clone)]
 pub struct Fill {
     pub style: peniko::Fill,

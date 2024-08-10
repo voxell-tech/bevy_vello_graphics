@@ -20,18 +20,25 @@ fn render_shapes(mut commands: Commands) {
     let mut triangle_path = kurbo::BezPath::new();
     triangle_path.move_to(kurbo::Point::new(0.0, -10.0));
     triangle_path.line_to(kurbo::Point::new(0.0, 10.0));
-    triangle_path.line_to(kurbo::Point::new(25.0, 0.0));
+    triangle_path.line_to(kurbo::Point::new(20.0, 0.0));
     triangle_path.close_path();
 
     let triangle = VelloBezPath::new().with_path(triangle_path);
+    let head_style = (
+        HeadFill(Fill::new().with_color(Color::WHITE.with_alpha(0.6))),
+        HeadStroke(
+            Stroke::from_style(kurbo::Stroke::new(4.0).with_join(kurbo::Join::Miter))
+                .with_color(Color::BLACK.with_alpha(0.6)),
+        ),
+    );
 
     // Line
     let line = (
         VelloLine::new(DVec2::new(100.0, 100.0), DVec2::new(0.0, -100.0)),
-        Fill::new().with_color(Color::WHITE),
         Stroke::new(5.0).with_color(Color::WHITE),
         Transform::from_xyz(-300.0, 0.0, 0.0),
         HeadBundle::new(triangle.clone()),
+        head_style.clone(),
     );
 
     // Rectangle
@@ -41,6 +48,7 @@ fn render_shapes(mut commands: Commands) {
         Stroke::new(5.0).with_color(css::RED.into()),
         Transform::from_xyz(-100.0, 0.0, 0.0),
         HeadBundle::new(triangle.clone()),
+        head_style.clone(),
     );
 
     // Circle
@@ -50,6 +58,7 @@ fn render_shapes(mut commands: Commands) {
         Stroke::new(5.0).with_color(css::DARK_GREEN.into()),
         Transform::from_xyz(100.0, 0.0, 0.0),
         HeadBundle::new(triangle.clone()),
+        head_style.clone(),
     );
 
     let mut bez_path = kurbo::BezPath::new();
@@ -63,6 +72,7 @@ fn render_shapes(mut commands: Commands) {
         Stroke::new(4.0).with_color(css::YELLOW.into()),
         Transform::from_xyz(300.0, 0.0, 0.0),
         HeadBundle::new(triangle),
+        head_style,
     );
 
     commands.spawn(VelloSceneBundle::default()).insert(line);
