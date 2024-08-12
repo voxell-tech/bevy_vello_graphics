@@ -1,8 +1,15 @@
-use bevy::prelude::*;
+//! A Bevy friendly wrapper around [`peniko::Fill`].
+
+use bevy_color::Color;
+use bevy_ecs::prelude::*;
+use bevy_utils::prelude::*;
 use bevy_vello::prelude::*;
 
 use crate::brush::Brush;
 
+/// Fill of a [`Vector`][Vector].
+///
+/// [Vector]: crate::Vector
 #[derive(Component, Clone)]
 pub struct Fill {
     pub style: peniko::Fill,

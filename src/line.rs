@@ -1,8 +1,12 @@
-use bevy::{math::DVec2, prelude::*};
+//! A Bevy friendly wrapper around [`kurbo::Line`].
+
+use bevy_ecs::prelude::*;
+use bevy_math::DVec2;
 use bevy_vello::prelude::*;
 
-use super::VelloVector;
+use super::Vector;
 
+/// Vello line component.
 #[derive(Component, Default, Debug, Clone, Copy)]
 pub struct VelloLine {
     pub p0: DVec2,
@@ -32,11 +36,19 @@ impl VelloLine {
     }
 }
 
-impl VelloVector for VelloLine {
+impl Vector for VelloLine {
     fn shape(&self) -> impl kurbo::Shape {
         kurbo::Line::new(
             kurbo::Point::new(self.p0.x, self.p0.y),
             kurbo::Point::new(self.p1.x, self.p1.y),
         )
+    }
+
+    fn border_translation(&self, time: f64) -> DVec2 {
+        self.p0.lerp(self.p1, time)
+    }
+
+    fn border_rotation(&self, _time: f64) -> f64 {
+        (self.p1 - self.p0).to_angle()
     }
 }

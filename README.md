@@ -1,6 +1,10 @@
 # Bevy Vello Graphics
 
-Bevy Vello Graphics simplifies the creation and rendering of [Vello](https://github.com/linebender/vello) vector graphics in Bevy. Each vector graphic is treated as a component and rendered using [Bevy Vello](https://github.com/linebender/bevy_vello). Vector graphics that are supported include:
+Bevy Vello Graphics simplifies the creation and rendering of [Vello](https://github.com/linebender/vello) vector graphics in Bevy.
+
+![hello_world](./.github/assets/hello_world.png)
+
+Each vector graphic is treated as a component and rendered using [Bevy Vello](https://github.com/linebender/bevy_vello). Vector graphics that are supported include:
 
 - Line
 - Rect
