@@ -1,6 +1,47 @@
 //! # Bevy Vello Graphics
 //!
-//! A Bevy friendly wrapper around [Vello][vello] graphics.
+//! Bevy Vello Graphics is a Bevy friendly wrapper around [Vello][vello] graphics.
+//!
+//! ## Quick Start
+//!
+//! To use Bevy Vello Graphics, you will first need to add the [`VelloGraphicsPlugin`]:
+//!
+//! ```no_run
+//! use bevy::prelude::*;
+//! use bevy_vello_graphics::prelude::*;
+//!
+//! App::new()
+//!     .add_plugins((DefaultPlugins, VelloGraphicsPlugin))
+//!     // ...your other plugins, systems, etc.
+//!     .run();
+//! ```
+//!
+//! Then, spawn in a 2d camera to render the vello scene:
+//!
+//! ```
+//! use bevy::prelude::*;
+//!
+//! fn setup(mut commands: Commands) {
+//!     commands.spawn(Camera2dBundle::default());
+//! }
+//! ```
+//!
+//! Finally, spawn in your vector graphics of choice:
+//!
+//! ```
+//! use bevy::prelude::*;
+//! use bevy_vello_graphics::{bevy_vello::prelude::*, prelude::*};
+//!
+//! fn spawn_rect(mut commands: Commands) {
+//!    let rect = (
+//!        VelloRect::new(100.0, 200.0),
+//!        Fill::new().with_color(Color::WHITE),
+//!        Stroke::new(5.0).with_color(Color::BLACK),
+//!    );
+//!
+//!    commands.spawn(VelloSceneBundle::default()).insert(rect);
+//! }
+//! ```
 
 pub use bevy_vello;
 
