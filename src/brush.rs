@@ -19,7 +19,7 @@ impl Brush {
     }
 
     pub fn from_color(color: Color) -> Self {
-        let color = color.to_linear();
+        let color = color.to_srgba();
         Self {
             value: peniko::Brush::Solid(peniko::Color::rgba(
                 color.red as f64,
