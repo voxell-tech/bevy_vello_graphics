@@ -1,11 +1,12 @@
 use bevy::{color::palettes::css, math::DVec2, prelude::*};
-use bevy_vello_graphics::{bevy_vello::prelude::*, prelude::*};
+use bevy_vello_graphics::{
+    bevy_vello::{prelude::*, VelloPlugin},
+    prelude::*,
+};
 
 fn main() {
     App::new()
-        // Bevy plugins
-        .add_plugins(DefaultPlugins)
-        // Custom Plugins
+        .add_plugins((DefaultPlugins, VelloPlugin::default()))
         .add_plugins(VelloGraphicsPlugin)
         .add_systems(Startup, (setup, render_shapes))
         .add_systems(Update, animation)

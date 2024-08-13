@@ -9,9 +9,11 @@
 //! ```no_run
 //! use bevy::prelude::*;
 //! use bevy_vello_graphics::prelude::*;
+//! use bevy_vello_graphics::bevy_vello::VelloPlugin;
 //!
 //! App::new()
-//!     .add_plugins((DefaultPlugins, VelloGraphicsPlugin))
+//!     .add_plugins((DefaultPlugins, VelloPlugin::default()))
+//!     .add_plugins(VelloGraphicsPlugin)
 //!     // ...your other plugins, systems, etc.
 //!     .run();
 //! ```
@@ -51,7 +53,6 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_vello::prelude::*;
 
-use bevy_vello::VelloPlugin;
 use head::{draw_heads, prepare_heads, HeadScene};
 use prelude::*;
 use vector::{draw_vectors, VectorScene};
@@ -89,14 +90,13 @@ impl Plugin for VelloGraphicsPlugin {
         app.configure_sets(Update, ((DrawVector, DrawHead), Composite).chain());
         app.configure_sets(Update, (PrepareHead, DrawHead).chain());
 
-        app.add_plugins(VelloPlugin)
-            .add_plugins((
-                VectorPlugin::<VelloRect>::default(),
-                VectorPlugin::<VelloCircle>::default(),
-                VectorPlugin::<VelloLine>::default(),
-                VectorPlugin::<VelloBezPath>::default(),
-            ))
-            .add_systems(Update, composite.in_set(Composite));
+        app.add_plugins((
+            VectorPlugin::<VelloRect>::default(),
+            VectorPlugin::<VelloCircle>::default(),
+            VectorPlugin::<VelloLine>::default(),
+            VectorPlugin::<VelloBezPath>::default(),
+        ))
+        .add_systems(Update, composite.in_set(Composite));
     }
 }
 

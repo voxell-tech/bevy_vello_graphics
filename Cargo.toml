@@ -10,7 +10,7 @@ bevy_ecs = "0.14"
 bevy_math = "0.14"
 bevy_color = "0.14"
 bevy_utils = "0.14"
-bevy_vello = "0.5"
+bevy_vello = "0.6"
 
 [dev-dependencies]
 bevy = "0.14"
