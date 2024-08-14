@@ -35,13 +35,13 @@
 //! use bevy_vello_graphics::{bevy_vello::prelude::*, prelude::*};
 //!
 //! fn spawn_rect(mut commands: Commands) {
-//!    let rect = (
-//!        VelloRect::new(100.0, 200.0),
-//!        Fill::new().with_color(Color::WHITE),
-//!        Stroke::new(5.0).with_color(Color::BLACK),
-//!    );
+//!     let rect = (
+//!         VelloRect::new(100.0, 200.0),
+//!         Fill::new().with_color(Color::WHITE),
+//!         Stroke::new(5.0).with_color(Color::BLACK),
+//!     );
 //!
-//!    commands.spawn(VelloSceneBundle::default()).insert(rect);
+//!     commands.spawn(VelloSceneBundle::default()).insert(rect);
 //! }
 //! ```
 
