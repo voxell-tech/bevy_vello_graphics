@@ -5,12 +5,12 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-bevy_app = "0.14"
-bevy_ecs = "0.14"
-bevy_math = "0.14"
-bevy_color = "0.14"
-bevy_utils = "0.14"
-bevy_vello = "0.6"
+bevy_app = "0.14.1"
+bevy_ecs = "0.14.1"
+bevy_math = "0.14.1"
+bevy_color = "0.14.1"
+bevy_utils = "0.14.1"
+bevy_vello = "0.6.1"
 
 [dev-dependencies]
 bevy = "0.14"
