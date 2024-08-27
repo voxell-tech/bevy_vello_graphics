@@ -75,7 +75,7 @@ pub(super) fn draw_heads<V: Vector + Component>(
 pub struct HeadScene;
 
 /// Bundle of components needed for drawing a [`HeadVector`] on the border of a [`Vector`] shape.
-#[derive(Bundle, Copy, Clone, Debug)]
+#[derive(Bundle, Debug, Copy, Clone)]
 pub struct HeadBundle<V: Vector>
 where
     V: Send + Sync + 'static,
@@ -103,11 +103,11 @@ where
 pub struct HeadVector<V: Vector>(pub V);
 
 /// Fill of a [`HeadVector`].
-#[derive(Component, Clone)]
+#[derive(Component, Debug, Clone)]
 pub struct HeadFill(pub Fill);
 
 /// Stroke of a [`HeadVector`].
-#[derive(Component, Default, Clone)]
+#[derive(Component, Default, Debug, Clone)]
 pub struct HeadStroke(pub Stroke);
 
 /// Positioning configurations of a head.

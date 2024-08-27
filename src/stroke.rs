@@ -10,7 +10,7 @@ use crate::brush::Brush;
 /// Stroke of a [`Vector`][Vector].
 ///
 /// [Vector]: crate::Vector
-#[derive(Component, Default, Clone)]
+#[derive(Component, Default, Debug, Clone)]
 pub struct Stroke {
     pub style: kurbo::Stroke,
     pub brush: Brush,

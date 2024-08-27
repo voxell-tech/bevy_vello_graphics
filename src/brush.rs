@@ -4,7 +4,7 @@ use bevy_color::Color;
 use bevy_utils::prelude::*;
 use bevy_vello::prelude::*;
 
-#[derive(Default, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct Brush {
     pub value: peniko::Brush,
     pub transform: kurbo::Affine,

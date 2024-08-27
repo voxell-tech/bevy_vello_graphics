@@ -10,7 +10,7 @@ use crate::brush::Brush;
 /// Fill of a [`Vector`][Vector].
 ///
 /// [Vector]: crate::Vector
-#[derive(Component, Clone)]
+#[derive(Component, Debug, Clone)]
 pub struct Fill {
     pub style: peniko::Fill,
     pub brush: Brush,
