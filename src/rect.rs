@@ -1,7 +1,7 @@
 //! A Bevy friendly wrapper around [`kurbo::RoundedRect`].
 
-use bevy_ecs::prelude::*;
-use bevy_math::{DVec2, FloatExt};
+use bevy::math::DVec2;
+use bevy::prelude::*;
 use bevy_vello::vello::kurbo;
 
 use super::Vector;

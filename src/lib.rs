@@ -45,12 +45,9 @@
 //! }
 //! ```
 
-pub use bevy_vello;
-
 use std::marker::PhantomData;
 
-use bevy_app::prelude::*;
-use bevy_ecs::prelude::*;
+use bevy::prelude::*;
 use bevy_vello::prelude::*;
 
 use head::{draw_heads, prepare_heads, HeadScene};
@@ -78,7 +75,6 @@ pub mod prelude {
         rect::VelloRect,
         stroke::Stroke,
         vector::Vector,
-        VelloGraphicsPlugin,
     };
 }
 

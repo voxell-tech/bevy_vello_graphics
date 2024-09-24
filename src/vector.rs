@@ -1,7 +1,7 @@
 //! Drawing [`Vector`] shapes.
 
-use bevy_ecs::prelude::*;
-use bevy_math::DVec2;
+use bevy::math::DVec2;
+use bevy::prelude::*;
 use bevy_vello::vello::{self, kurbo};
 
 use crate::{Fill, SceneHolder, Stroke};

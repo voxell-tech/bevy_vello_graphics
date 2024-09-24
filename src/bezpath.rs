@@ -1,8 +1,7 @@
 //! A Bevy friendly wrapper around [`kurbo::BezPath`] with tracing capability.
 
-use bevy_ecs::prelude::*;
-use bevy_math::DVec2;
-use bevy_utils::prelude::*;
+use bevy::math::DVec2;
+use bevy::prelude::*;
 use bevy_vello::vello::kurbo;
 
 use super::Vector;
