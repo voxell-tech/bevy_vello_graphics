@@ -21,12 +21,12 @@ impl Brush {
     pub fn from_color(color: Color) -> Self {
         let color = color.to_srgba();
         Self {
-            value: peniko::Brush::Solid(peniko::Color::rgba(
-                color.red as f64,
-                color.green as f64,
-                color.blue as f64,
-                color.alpha as f64,
-            )),
+            value: peniko::Brush::Solid(peniko::Color::new([
+                color.red,
+                color.green,
+                color.blue,
+                color.alpha,
+            ])),
             ..default()
         }
     }
