@@ -1,19 +1,19 @@
 [package]
 name = "bevy_vello_graphics"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-bevy_app = "0.14.1"
-bevy_ecs = "0.14.1"
-bevy_math = "0.14.1"
-bevy_color = "0.14.1"
-bevy_utils = "0.14.1"
-bevy_vello = "0.6.1"
+bevy_app = "0.15.1"
+bevy_ecs = "0.15.1"
+bevy_math = "0.15.1"
+bevy_color = "0.15.1"
+bevy_utils = "0.15.1"
+bevy_vello = { git = "https://github.com/linebender/bevy_vello", rev= "806377b27add5d119a282f316e17e30651f9f35b"}
 
 [dev-dependencies]
-bevy = "0.14"
+bevy = "0.15"
 
 [lints.clippy]
 redundant_type_annotations = "warn"
