@@ -14,7 +14,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2d::default());
 }
 
 fn render_shapes(mut commands: Commands) {
@@ -86,7 +86,7 @@ fn render_shapes(mut commands: Commands) {
 
 fn animation(mut q_heads: Query<&mut Head>, time: Res<Time>) {
     // Overshoots for stability check
-    let mut factor = time.elapsed_seconds_f64() * 0.5;
+    let mut factor = time.elapsed_secs_f64() * 0.5;
     factor = factor.sin().remap(-1.0, 1.0, -0.2, 1.2);
 
     for mut head in q_heads.iter_mut() {
